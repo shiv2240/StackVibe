@@ -1,8 +1,9 @@
 /**
- * StackVibe - Main World Detector
- * Runs directly in the MAIN page execution context to access real window properties (React, Vue, Next, Webpack, etc.)
+ * StackVibe - Main World Execution Context Detector
+ * Executes directly inside target webpage's true window object scope to inspect runtime frameworks.
+ * 
+ * @returns {Array<Object>} Array of detected technology signatures
  */
-
 (function () {
   function scanMainWorldTechStack() {
     const detected = [];
