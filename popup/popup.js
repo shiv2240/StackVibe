@@ -1,8 +1,9 @@
 /**
- * StackVibe - Developer Inspection Console Controller v2.0
- * Pure evidence-based scanner UI with state management, HTML escaping, structural inspection, JSON export, and Security Question Password Recovery.
+ * StackVibe - Developer Inspection Console View Controller v2.0
+ * Manages tab switching, DOM tree structure rendering, component blueprints, AI prompts, and security question password recovery.
+ * 
+ * @module popup/popup
  */
-
 document.addEventListener("DOMContentLoaded", async () => {
   // Initialize Auth & Storage
   const auth = new AuthManager();
