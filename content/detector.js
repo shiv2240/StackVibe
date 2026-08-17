@@ -1,6 +1,8 @@
 /**
- * StackVibe - Content Script Tech Stack Detector
- * Runs inside the web page context to analyze window, document, scripts, meta tags, and class structures.
+ * StackVibe - Isolated World Content Script Detector
+ * Fallback DOM scanner running within Chrome Isolated Sandbox context.
+ * 
+ * @module content/detector
  */
 
 (function () {
