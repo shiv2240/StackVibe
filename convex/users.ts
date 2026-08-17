@@ -2,7 +2,10 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
- * Register a new user in Convex database
+ * StackVibe - Convex User Authentication & Account Functions
+ * Handles user registration, security questions, login, and password resets.
+ * 
+ * @module convex/users
  */
 export const register = mutation({
   args: {
