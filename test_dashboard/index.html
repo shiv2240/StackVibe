@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StackVibe - Frontend Tech & Design Spec Studio</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="web-app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">⚡</div>
+        <div class="brand-info">
+          <h2>StackVibe</h2>
+          <span>Design & Stack Studio</span>
+        </div>
+      </div>
+
+      <!-- User Account Status Widget -->
+      <div id="userWidget" class="user-widget">
+        <div class="user-avatar" id="userAvatar">👤</div>
+        <div class="user-meta">
+          <span id="userName" class="user-name">Guest User</span>
+          <span id="userStatus" class="user-status">Sign up to sync scans</span>
+        </div>
+        <button id="authTriggerBtn" class="btn-xs btn-primary">Account</button>
+      </div>
+
+      <!-- Sample Site Presets Switcher -->
+      <div class="presets-section">
+        <label>Preset Sites Scanner Test</label>
+        <div class="preset-buttons">
+          <button class="preset-btn active" data-site="stripe">
+            <span class="preset-icon">💳</span>
+            <span>Stripe</span>
+          </button>
+          <button class="preset-btn" data-site="nextjs">
+            <span class="preset-icon">⚡</span>
+            <span>Next.js Doc</span>
+          </button>
+          <button class="preset-btn" data-site="tailwind">
+            <span class="preset-icon">🎨</span>
+            <span>Tailwind Labs</span>
+          </button>
+          <button class="preset-btn" data-site="shopify">
+            <span class="preset-icon">🛍️</span>
+            <span>Shopify Store</span>
+          </button>
+          <button class="preset-btn" data-site="webflow">
+            <span class="preset-icon">🌊</span>
+            <span>Webflow Showcase</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Extension Load Guide -->
+      <div class="extension-install-card">
+        <span class="card-icon">🧩</span>
+        <div class="card-text">
+          <strong>Chrome Extension Ready</strong>
+          <p>Load unpacked folder in <code>chrome://extensions</code> to scan any live tab.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div class="url-bar">
+          <span class="url-icon">🌐</span>
+          <input type="text" id="targetUrlInput" value="https://stripe.com" placeholder="https://example.com">
+          <button id="scanUrlBtn" class="btn-primary">
+            <span>Scan Website</span>
+          </button>
+        </div>
+        <div class="action-buttons">
+          <button id="extensionPopupPreviewBtn" class="btn-secondary">
+            📱 Preview Chrome Extension Popup
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Grid Layout -->
+      <div class="dashboard-grid">
+        <!-- Panel 1: Tech Stack Breakdown -->
+        <section class="dash-card">
+          <div class="card-header">
+            <h3>⚡ Detected Tech Stack</h3>
+            <span id="dashStackBadge" class="badge">0 Detected</span>
+          </div>
+          <div id="dashStackList" class="dash-stack-grid">
+            <!-- Dynamic tech stack cards -->
+          </div>
+        </section>
+
+        <!-- Panel 2: Design Language System (GetDesign.md) -->
+        <section class="dash-card">
+          <div class="card-header">
+            <h3>🎨 Design Spec (getdesign.md)</h3>
+            <button id="dashCopyMdBtn" class="btn-sm btn-secondary">
+              📋 Copy Markdown Spec
+            </button>
+          </div>
+
+          <div class="spec-section">
+            <label>Extracted Color System</label>
+            <div id="dashColorSwatches" class="dash-color-grid"></div>
+          </div>
+
+          <div class="spec-two-col">
+            <div class="spec-box">
+              <label>Typography Hierarchy</label>
+              <div id="dashTypographyBox" class="spec-details"></div>
+            </div>
+            <div class="spec-box">
+              <label>Spacing & Radii Tokens</label>
+              <div id="dashTokensBox" class="spec-details"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 3: AI Prompt Generator -->
+        <section class="dash-card span-full">
+          <div class="card-header">
+            <h3>🤖 AI Prompt Generator (For Cursor / Claude / Antigravity / ChatGPT)</h3>
+            <button id="dashCopyAiPromptBtn" class="btn-sm btn-primary">
+              ✨ Copy AI Prompt
+            </button>
+          </div>
+          <p class="card-desc">Comprehensive system & user prompt generated from the extracted tech stack and design tokens.</p>
+          <pre id="dashAiPromptText" class="dash-code-block"></pre>
+        </section>
+
+        <!-- Panel 4: Multi-Tool Exporters (Figma, Stitch, Tailwind, CSS) -->
+        <section class="dash-card span-full">
+          <div class="card-header">
+            <h3>📤 Export to Figma, Stitch & Code Editors</h3>
+            <div class="format-tabs">
+              <button class="fmt-tab active" data-fmt="figma">Figma Tokens JSON</button>
+              <button class="fmt-tab" data-fmt="stitch">Stitch / Code Component</button>
+              <button class="fmt-tab" data-fmt="tailwind">Tailwind Config</button>
+              <button class="fmt-tab" data-fmt="css">CSS Variables</button>
+            </div>
+            <button id="dashCopyExportBtn" class="btn-sm btn-secondary">Copy Snippet</button>
+          </div>
+          <pre id="dashExportCodeText" class="dash-code-block"></pre>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Extension Popup Floating Modal (Interactive Extension Simulation) -->
+  <div id="extensionPopupModal" class="popup-modal-overlay">
+    <div class="popup-modal-wrapper">
+      <button id="closePopupModal" class="popup-close-btn">&times;</button>
+      <iframe src="../popup/popup.html" class="extension-frame"></iframe>
+    </div>
+  </div>
+
+  <!-- Web Auth Modal -->
+  <div id="webAuthModal" class="modal-overlay">
+    <div class="modal-card">
+      <button id="closeWebAuthModal" class="modal-close">&times;</button>
+      
+      <div class="modal-tabs">
+        <button id="webTabRegister" class="modal-tab active">Create Account</button>
+        <button id="webTabLogin" class="modal-tab">Sign In</button>
+      </div>
+
+      <form id="webAuthForm" class="auth-form">
+        <div id="webNameGroup" class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="webNameInput" placeholder="Taylor Swift">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="webEmailInput" placeholder="taylor@design.io" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="webPasswordInput" placeholder="••••••••" required>
+        </div>
+        <button type="submit" id="webAuthSubmitBtn" class="btn-submit">Create Free Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="webToast" class="toast">Action completed</div>
+
+  <!-- Dependencies -->
+  <script src="../lib/tech_signatures.js"></script>
+  <script src="../lib/auth.js"></script>
+  <script src="../lib/export_engine.js"></script>
+  <script src="../lib/storage.js"></script>
+  <script src="../lib/convex_client.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

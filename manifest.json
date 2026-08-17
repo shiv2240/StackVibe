@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "StackVibe - Tech Stack & Design Spec Extractor",
+  "version": "1.0.0",
+  "description": "Identify frontend tech stacks & extract full getdesign.md style design systems, AI prompts, Figma tokens, and code snippets.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background/service_worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "lib/tech_signatures.js",
+        "content/main_world_detector.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "lib/tech_signatures.js",
+        "content/detector.js",
+        "content/design_extractor.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*", "content/main_world_detector.js", "content/inspector_overlay.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
