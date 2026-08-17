@@ -2,7 +2,10 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 /**
- * Convex Database Schema for StackVibe Extension
+ * StackVibe - Convex Database Schema Definition
+ * Defines users (with security questions) and scan history collections.
+ * 
+ * @module convex/schema
  */
 export default defineSchema({
   // Users table
