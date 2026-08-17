@@ -392,27 +392,48 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- 4. Page Structure Tree ---
   function renderPageStructureTree() {
-    const comps = scanState.designSpec.components || {};
+    const tree = scanState.designSpec?.structureTree;
+    const comps = scanState.designSpec?.components || {};
 
-    let html = `
-      <div class="tree-node">
-        <span class="tree-tag">&lt;DOCUMENT&gt;</span>
-        <div class="tree-node">
-          <span class="tree-tag">&lt;HEADER&gt;</span> <span class="tree-info">${comps.header ? `Height ${comps.header.height || 'auto'} • ${comps.header.navItemsCount || 0} Links` : 'Standard Navigation'}</span>
-        </div>
-        <div class="tree-node">
-          <span class="tree-tag">&lt;HERO&gt;</span> <span class="tree-info">${comps.hero ? `${comps.hero.hasTwoColumns ? 'Two-Column Split' : 'Single Column'} • Heading: "${escapeHtml(comps.hero.headingText || 'N/A')}"` : 'Hero Section'}</span>
-        </div>
-        <div class="tree-node">
-          <span class="tree-tag">&lt;COMPONENTS&gt;</span> <span class="tree-info">${comps.buttons ? comps.buttons.length : 0} Inspected Buttons • ${comps.cards ? comps.cards.length : 0} Inspected Cards</span>
-        </div>
-        <div class="tree-node">
-          <span class="tree-tag">&lt;FOOTER&gt;</span> <span class="tree-info">Footer Section</span>
-        </div>
-      </div>
-    `;
+    function renderNode(node) {
+      if (!node) return '';
+      const tagStr = `&lt;${escapeHtml(node.tag)}${escapeHtml(node.id || '')}${escapeHtml(node.class || '')}&gt;`;
+      const headingStr = node.heading ? ` • <span style="color:var(--text-main);font-weight:600;">${escapeHtml(node.heading)}</span>` : '';
+      const statsStr = node.stats ? ` • <span style="color:var(--text-muted);">${escapeHtml(node.stats)}</span>` : '';
 
-    structureTreeBox.innerHTML = html;
+      const childrenHtml = (node.children || []).length > 0
+        ? (node.children || []).map(child => renderNode(child)).join('')
+        : '';
+
+      return `
+        <div class="tree-node">
+          <span class="tree-tag">${tagStr}</span>${headingStr}${statsStr}
+          ${childrenHtml}
+        </div>
+      `;
+    }
+
+    if (tree && tree.children && tree.children.length > 0) {
+      structureTreeBox.innerHTML = renderNode(tree);
+    } else {
+      structureTreeBox.innerHTML = `
+        <div class="tree-node">
+          <span class="tree-tag">&lt;DOCUMENT&gt;</span>
+          <div class="tree-node">
+            <span class="tree-tag">&lt;HEADER&gt;</span> <span class="tree-info">${comps.header ? `Height ${comps.header.height || 'auto'} • ${comps.header.navItemsCount || 0} Navigation Links` : 'Header Navigation Bar'}</span>
+          </div>
+          <div class="tree-node">
+            <span class="tree-tag">&lt;HERO&gt;</span> <span class="tree-info">${comps.hero ? `${comps.hero.hasTwoColumns ? 'Two-Column Split' : 'Single Column'} • ${comps.hero.headingText ? `Heading: "${escapeHtml(comps.hero.headingText)}"` : 'Hero Banner'}` : 'Hero Banner Section'}</span>
+          </div>
+          <div class="tree-node">
+            <span class="tree-tag">&lt;SECTION.COMPONENTS&gt;</span> <span class="tree-info">${comps.buttons ? comps.buttons.length : 0} Inspected Buttons • ${comps.cards ? comps.cards.length : 0} Inspected Card Surfaces</span>
+          </div>
+          <div class="tree-node">
+            <span class="tree-tag">&lt;FOOTER&gt;</span> <span class="tree-info">Footer Navigation & Copyright</span>
+          </div>
+        </div>
+      `;
+    }
   }
 
   // --- 5. Component Blueprints ---
