@@ -1,8 +1,9 @@
 /**
- * StackVibe - Advanced Content Script Design & Structure Extractor
- * Extracts page structure, component geometry, color semantic roles, and visual evidence.
+ * StackVibe - Visual Forensics & DOM Geometry Extractor
+ * Computes semantic color roles, frequency distributions, typography scales, and component bounds.
+ * 
+ * @module content/design_extractor
  */
-
 (function () {
   /**
    * Convert RGB/RGBA string to HEX
