@@ -12,6 +12,8 @@ export default defineSchema({
     name: v.string(),
     role: v.string(),
     avatar: v.string(),
+    securityQuestion: v.optional(v.string()),
+    securityAnswerHash: v.optional(v.string()),
     createdAt: v.string(),
   }).index("by_email", ["email"]),
 

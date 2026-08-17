@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StackVibe - Developer Web Inspection Console</title>
+  <link rel="stylesheet" href="popup.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-icon">💧</div>
+        <div class="brand-text">
+          <h1>StackVibe</h1>
+          <span class="tagline">Web Intelligence Console</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div id="scanStatusBadge" class="status-badge idle">
+          <span class="status-dot"></span>
+          <span id="statusLabel">Ready</span>
+        </div>
+        <button id="themeToggleBtn" class="btn-icon-toggle" title="Toggle Light/Dark Theme">
+          <span class="theme-icon">☀️</span>
+        </button>
+        <button id="authBtn" class="btn-auth">
+          <span class="auth-icon">👤</span>
+          <span id="userBtnLabel">Account</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Account Auth Banner -->
+    <div id="authBanner" class="auth-banner">
+      <div class="banner-content">
+        <span class="banner-icon">✨</span>
+        <div class="banner-text">
+          <strong>Sync Cloud History!</strong> Create an account to save snaps to Convex Cloud.
+        </div>
+      </div>
+      <button id="bannerSignUpBtn" class="btn-sm btn-primary">Create Account</button>
+    </div>
+
+    <!-- Active Target Webpage Card -->
+    <section class="site-card">
+      <div class="site-info">
+        <span class="site-favicon">🌐</span>
+        <div class="site-meta">
+          <h2 id="siteTitle">Inspecting Active Web Page...</h2>
+          <span id="siteUrl" class="site-url">https://example.com</span>
+        </div>
+      </div>
+      <button id="rescanBtn" class="btn-snap-primary" title="Rescan Page">
+        <span class="snap-icon">📷</span>
+        <span>Inspect Page</span>
+      </button>
+    </section>
+
+    <!-- Icon Navigation Bar with Floating Tooltips -->
+    <nav class="nav-tabs-icons">
+      <button class="nav-icon-btn active" data-tab="tab-overview" data-tooltip="Overview & Health">
+        <span class="nav-icon">📊</span>
+      </button>
+      <button class="nav-icon-btn" data-tab="tab-stack" data-tooltip="Technology Graph">
+        <span class="nav-icon">⚡</span>
+      </button>
+      <button class="nav-icon-btn" data-tab="tab-design" data-tooltip="Design Forensics">
+        <span class="nav-icon">🎨</span>
+      </button>
+      <button class="nav-icon-btn" data-tab="tab-structure" data-tooltip="Page Structure Tree">
+        <span class="nav-icon">🌳</span>
+      </button>
+      <button class="nav-icon-btn" data-tab="tab-components" data-tooltip="Extracted Components">
+        <span class="nav-icon">🧩</span>
+      </button>
+      <button class="nav-icon-btn" data-tab="tab-ai" data-tooltip="AI Reconstruction">
+        <span class="nav-icon">🤖</span>
+      </button>
+      <button class="nav-icon-btn" data-tab="tab-mix" data-tooltip="Design Mixer (Inspiration)">
+        <span class="nav-icon">🔀</span>
+      </button>
+      <button class="nav-icon-btn" data-tab="tab-history" data-tooltip="Snap Library">
+        <span class="nav-icon">📂</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="tab-content">
+      <!-- 1. Overview Panel -->
+      <section id="tab-overview" class="tab-pane active">
+        <div class="panel-header">
+          <h3>Inspection Health & Summary</h3>
+          <button id="copyFullScanJsonBtn" class="btn-xs btn-secondary">Copy Full Scan JSON</button>
+        </div>
+
+        <div class="health-card">
+          <div class="health-score-row">
+            <div class="health-score">
+              <span id="healthScoreVal">96%</span>
+              <span class="health-sub">Scan Quality</span>
+            </div>
+            <div class="health-metrics">
+              <div class="metric-item"><span id="metricTech">0</span> Technologies</div>
+              <div class="metric-item"><span id="metricSignals">0</span> Signal Evidences</div>
+              <div class="metric-item"><span id="metricDuration">0ms</span> Scan Time</div>
+            </div>
+          </div>
+          <div class="quality-bar-container">
+            <div id="qualityBarFill" class="quality-bar-fill" style="width: 96%;"></div>
+          </div>
+        </div>
+
+        <div class="overview-grid">
+          <div class="overview-box">
+            <h4>Primary Stack</h4>
+            <div id="overviewStackList" class="compact-list"></div>
+          </div>
+          <div class="overview-box">
+            <h4>Extracted Theme</h4>
+            <div id="overviewThemeBox" class="compact-theme-box"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Technology Graph Panel -->
+      <section id="tab-stack" class="tab-pane">
+        <div class="panel-header">
+          <h3>Technology Graph</h3>
+          <div class="header-actions-inline">
+            <span id="stackCountBadge" class="badge">0 Detected</span>
+            <button id="copyStackJsonBtn" class="btn-xs btn-secondary">Copy JSON</button>
+          </div>
+        </div>
+        <div id="techStackList" class="stack-grid"></div>
+      </section>
+
+      <!-- 3. Design Forensics Panel -->
+      <section id="tab-design" class="tab-pane">
+        <div class="panel-header">
+          <h3>Design Forensics & Tokens</h3>
+          <div class="header-actions-inline">
+            <button id="copyDesignJsonBtn" class="btn-xs btn-secondary">Copy JSON</button>
+            <button id="copyMarkdownBtn" class="btn-xs btn-primary">Copy getdesign.md</button>
+          </div>
+        </div>
+
+        <div class="spec-group">
+          <label>Semantic Color Roles & Frequency</label>
+          <div id="colorSwatches" class="color-swatches-grid"></div>
+        </div>
+
+        <div class="spec-group">
+          <label>Typography Hierarchy</label>
+          <div id="typographyBox" class="spec-card font-spec"></div>
+        </div>
+
+        <div class="spec-group">
+          <label>Layout & Geometry Tokens</label>
+          <div id="tokensBox" class="spec-card tokens-grid"></div>
+        </div>
+      </section>
+
+      <!-- 4. Page Structure Tree Panel -->
+      <section id="tab-structure" class="tab-pane">
+        <div class="panel-header">
+          <h3>Page Architecture Tree</h3>
+        </div>
+        <p class="panel-desc">Structural layout hierarchy extracted directly from the DOM.</p>
+
+        <div id="structureTreeBox" class="structure-tree-card"></div>
+      </section>
+
+      <!-- 5. Component Blueprints Panel -->
+      <section id="tab-components" class="tab-pane">
+        <div class="panel-header">
+          <h3>Extracted Components</h3>
+        </div>
+        <p class="panel-desc">Real computed geometry and styling blueprints extracted from page elements.</p>
+
+        <div id="componentsGrid" class="components-grid"></div>
+      </section>
+
+      <!-- 6. AI Reconstruction Panel -->
+      <section id="tab-ai" class="tab-pane">
+        <div class="panel-header">
+          <h3>AI Website Reconstruction</h3>
+        </div>
+
+        <div class="ai-controls-card">
+          <div class="control-row">
+            <label>AI Assistant</label>
+            <div class="ai-target-grid-sm">
+              <button class="ai-target-card-sm active" data-ai="claude">Claude</button>
+              <button class="ai-target-card-sm" data-ai="gpt">GPT-4o</button>
+              <button class="ai-target-card-sm" data-ai="gemini">Gemini</button>
+              <button class="ai-target-card-sm" data-ai="cursor">Cursor</button>
+              <button class="ai-target-card-sm" data-ai="lovable">Lovable</button>
+              <button class="ai-target-card-sm" data-ai="manus">Manus</button>
+            </div>
+          </div>
+
+          <div class="control-row inline-controls">
+            <div class="control-col">
+              <label for="aiTaskSelect">AI Task</label>
+              <select id="aiTaskSelect" class="form-select">
+                <option value="reconstruct">Reconstruct Website (Default)</option>
+                <option value="component">Recreate Selected Component</option>
+                <option value="prompt">Generate Implementation Prompt</option>
+                <option value="explain">Explain Architecture</option>
+                <option value="tokens">Generate Design Tokens</option>
+              </select>
+            </div>
+
+            <div class="control-col">
+              <label for="aiFidelitySelect">Fidelity Mode</label>
+              <select id="aiFidelitySelect" class="form-select">
+                <option value="exact">Exact (Faithful - Zero Redesign)</option>
+                <option value="high">High Fidelity</option>
+                <option value="inspired">Inspired</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scan Evidence Pill Bar -->
+        <div id="aiScanSummaryPill" class="scan-summary-pill-bar">
+          <span class="pill-title">Evidence Context:</span>
+          <span id="pillTechCount" class="pill-tag">0 Techs</span>
+          <span id="pillColorCount" class="pill-tag">0 Colors</span>
+          <span id="pillCompCount" class="pill-tag">0 Components</span>
+        </div>
+
+        <div class="code-box-wrapper margin-top-xs">
+          <div class="code-box-header">
+            <span id="aiTargetTitle">Reconstruction Directive</span>
+            <button id="copyAiPromptBtn" class="btn-xs btn-primary">Copy Directive</button>
+          </div>
+          <pre id="aiPromptPreview" class="code-preview"></pre>
+        </div>
+      </section>
+
+      <!-- 7. Design Mixer (Inspiration Lab) -->
+      <section id="tab-mix" class="tab-pane">
+        <div class="panel-header">
+          <h3>Design Mixer — Inspiration Lab</h3>
+        </div>
+        <p class="panel-desc">Combine design systems from saved sites into a creative prompt.</p>
+
+        <div class="mix-controls-card">
+          <div class="mix-row">
+            <label for="mixHeroSelect">Hero Section</label>
+            <select id="mixHeroSelect" class="mix-select">
+              <option value="stripe.com">stripe.com</option>
+              <option value="linear.app">linear.app</option>
+              <option value="vercel.com">vercel.com</option>
+              <option value="airbnb.com">airbnb.com</option>
+            </select>
+          </div>
+
+          <div class="mix-row">
+            <label for="mixNavSelect">Navigation</label>
+            <select id="mixNavSelect" class="mix-select">
+              <option value="linear.app">linear.app</option>
+              <option value="stripe.com">stripe.com</option>
+              <option value="vercel.com">vercel.com</option>
+              <option value="notion.so">notion.so</option>
+            </select>
+          </div>
+
+          <div class="mix-row">
+            <label for="mixButtonSelect">Buttons</label>
+            <select id="mixButtonSelect" class="mix-select">
+              <option value="vercel.com">vercel.com</option>
+              <option value="stripe.com">stripe.com</option>
+              <option value="linear.app">linear.app</option>
+              <option value="spotify.com">spotify.com</option>
+            </select>
+          </div>
+
+          <div class="mix-row">
+            <label for="mixCardSelect">Card Surfaces</label>
+            <select id="mixCardSelect" class="mix-select">
+              <option value="airbnb.com">airbnb.com</option>
+              <option value="stripe.com">stripe.com</option>
+              <option value="linear.app">linear.app</option>
+              <option value="vercel.com">vercel.com</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="copyMixPromptBtn" class="btn-primary btn-full margin-top">
+          ✨ Copy Combined Inspiration Prompt
+        </button>
+
+        <div class="code-box-wrapper margin-top">
+          <pre id="mixPromptPreview" class="code-preview"></pre>
+        </div>
+      </section>
+
+      <!-- 8. Snap Library & History Panel -->
+      <section id="tab-history" class="tab-pane">
+        <div class="panel-header">
+          <h3>Snap Library</h3>
+          <button id="clearHistoryBtn" class="btn-xs btn-danger">Clear Library</button>
+        </div>
+
+        <div class="library-search-bar">
+          <input type="text" id="librarySearchInput" placeholder="Search saved sites, domains...">
+        </div>
+
+        <div id="snapLibraryGrid" class="snap-library-grid"></div>
+      </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Action completed successfully</div>
+
+    <!-- Auth Modal (Registration, Login, Forgot Password Recovery) -->
+    <div id="authModal" class="modal-overlay">
+      <div class="modal-card">
+        <button id="closeAuthModal" class="modal-close">&times;</button>
+        
+        <div class="modal-tabs">
+          <button id="modalTabRegister" class="modal-tab active">Create Account</button>
+          <button id="modalTabLogin" class="modal-tab">Sign In</button>
+          <button id="modalTabForgot" class="modal-tab">Forgot Password</button>
+        </div>
+
+        <!-- Register & Login Form -->
+        <form id="authForm" class="auth-form">
+          <div id="nameFieldGroup" class="form-group">
+            <label for="userNameInput">Full Name</label>
+            <input type="text" id="userNameInput" placeholder="Alex Rivera">
+          </div>
+
+          <div class="form-group">
+            <label for="userEmailInput">Email Address</label>
+            <input type="email" id="userEmailInput" placeholder="alex@designstudio.com" required>
+          </div>
+
+          <div id="passwordFieldGroup" class="form-group">
+            <div class="label-row" style="display:flex; justify-content:space-between; align-items:center;">
+              <label for="userPasswordInput">Password</label>
+              <a href="#" id="forgotPasswordLink" class="link-sm" style="font-size:10px; color:var(--primary); text-decoration:none;">Forgot Password?</a>
+            </div>
+            <input type="password" id="userPasswordInput" placeholder="••••••••">
+          </div>
+
+          <div id="roleFieldGroup" class="form-group">
+            <label for="userRoleSelect">Primary Role</label>
+            <select id="userRoleSelect">
+              <option value="Frontend Engineer">Frontend Engineer</option>
+              <option value="Backend Engineer">Backend Engineer</option>
+              <option value="UI/UX Designer">UI/UX Designer</option>
+              <option value="Full Stack Developer">Full Stack Developer</option>
+              <option value="Mobile Developer">Mobile Developer</option>
+              <option value="DevOps Engineer">DevOps Engineer</option>
+              <option value="Product Manager">Product Manager</option>
+              <option value="Data Scientist / AI">Data Scientist / AI</option>
+              <option value="Student / Hobbyist">Student / Hobbyist</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- Security Question Verification Fields (Registration) -->
+          <div id="securityQuestionFieldGroup" class="form-group">
+            <label for="userSecurityQuestionSelect">Security Question (For Recovery)</label>
+            <select id="userSecurityQuestionSelect">
+              <option value="What was your first pet's name?">What was your first pet's name?</option>
+              <option value="What city were you born in?">What city were you born in?</option>
+              <option value="What is your favorite book or movie?">What is your favorite book or movie?</option>
+              <option value="What was the name of your first school?">What was the name of your first school?</option>
+              <option value="What model was your first car?">What model was your first car?</option>
+            </select>
+          </div>
+
+          <div id="securityAnswerFieldGroup" class="form-group">
+            <label for="userSecurityAnswerInput">Security Answer</label>
+            <input type="text" id="userSecurityAnswerInput" placeholder="Your answer (case-insensitive)">
+          </div>
+
+          <button type="submit" id="authSubmitBtn" class="btn-submit">
+            Create Free Account
+          </button>
+        </form>
+
+        <!-- Forgot Password Verification Workflow -->
+        <form id="forgotPasswordForm" class="auth-form hidden" style="display:none;">
+          <div class="form-group">
+            <label for="forgotEmailInput">Account Email Address</label>
+            <input type="email" id="forgotEmailInput" placeholder="alex@designstudio.com" required>
+          </div>
+
+          <button type="button" id="fetchSecurityQuestionBtn" class="btn-sm btn-secondary margin-top-xs">
+            Fetch Security Question
+          </button>
+
+          <div id="forgotStep2Group" class="form-group margin-top-sm" style="display:none;">
+            <div class="security-question-box" style="background:var(--bg-main); padding:8px 10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); font-size:11px; font-weight:700; color:var(--primary); margin-bottom:8px;">
+              Q: <span id="displaySecurityQuestionText">Security Question</span>
+            </div>
+
+            <div class="form-group">
+              <label for="forgotAnswerInput">Your Security Answer</label>
+              <input type="text" id="forgotAnswerInput" placeholder="Enter security answer">
+            </div>
+
+            <div class="form-group margin-top-xs">
+              <label for="forgotNewPasswordInput">New Password</label>
+              <input type="password" id="forgotNewPasswordInput" placeholder="Enter new password">
+            </div>
+
+            <button type="submit" id="resetPasswordBtn" class="btn-submit margin-top-sm">
+              Reset Password
+            </button>
+          </div>
+        </form>
+
+        <div id="userProfileView" class="profile-view hidden">
+          <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar">
+          <h3 id="profileName">User Name</h3>
+          <span id="profileEmail" class="profile-email">email@domain.com</span>
+          
+          <div class="form-group margin-top-sm" style="width: 100%; text-align: center;">
+            <label for="editProfileRoleSelect">User Role</label>
+            <select id="editProfileRoleSelect" class="role-select">
+              <option value="Frontend Engineer">Frontend Engineer</option>
+              <option value="Backend Engineer">Backend Engineer</option>
+              <option value="UI/UX Designer">UI/UX Designer</option>
+              <option value="Full Stack Developer">Full Stack Developer</option>
+              <option value="Mobile Developer">Mobile Developer</option>
+              <option value="DevOps Engineer">DevOps Engineer</option>
+              <option value="Product Manager">Product Manager</option>
+              <option value="Data Scientist / AI">Data Scientist / AI</option>
+              <option value="Student / Hobbyist">Student / Hobbyist</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <button id="updateRoleBtn" class="btn-sm btn-primary margin-top-xs">Update Role</button>
+          <button id="logoutBtn" class="btn-secondary btn-full margin-top">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dependencies -->
+  <script src="../lib/tech_signatures.js"></script>
+  <script src="../lib/auth.js"></script>
+  <script src="../lib/export_engine.js"></script>
+  <script src="../lib/storage.js"></script>
+  <script src="../lib/convex_client.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
