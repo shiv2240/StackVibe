@@ -173,7 +173,62 @@
       h3Size: h3St ? h3St.fontSize : null
     };
 
-    // 5. Container & Layout Grid
+    // 5. Real DOM Page Architecture Tree Extractor
+    function buildDomTreeNode(element, depth = 0) {
+      if (!element || depth > 3) return null;
+      const tagName = element.tagName ? element.tagName.toUpperCase() : 'DIV';
+      const idStr = element.id ? `#${element.id}` : '';
+      let classStr = '';
+      try {
+        const clsList = Array.from(element.classList || []).filter(c => !c.includes(':')).slice(0, 2);
+        if (clsList.length) classStr = `.${clsList.join('.')}`;
+      } catch (_) {}
+
+      const hEl = element.querySelector('h1, h2, h3, h4');
+      const headingText = hEl ? `${hEl.tagName}: "${hEl.textContent.trim().slice(0, 40)}"` : null;
+
+      const linksCount = element.querySelectorAll('a').length;
+      const buttonsCount = element.querySelectorAll('button').length;
+      const imgCount = element.querySelectorAll('img, svg').length;
+
+      const statsArr = [];
+      if (linksCount > 0) statsArr.push(`${linksCount} Links`);
+      if (buttonsCount > 0) statsArr.push(`${buttonsCount} Buttons`);
+      if (imgCount > 0) statsArr.push(`${imgCount} Media`);
+
+      // Find semantic child containers
+      const childContainers = Array.from(element.children).filter(child => {
+        const tag = child.tagName ? child.tagName.toUpperCase() : '';
+        const cls = (child.className || '').toString().toLowerCase();
+        return ['HEADER', 'NAV', 'MAIN', 'SECTION', 'ARTICLE', 'ASIDE', 'FOOTER', 'FORM', 'DIV'].includes(tag) &&
+               (tag !== 'DIV' || cls.includes('hero') || cls.includes('card') || cls.includes('grid') || cls.includes('container') || cls.includes('nav') || cls.includes('wrapper') || cls.includes('banner') || child.querySelector('h1, h2, h3'));
+      }).slice(0, 6);
+
+      const childrenNodes = childContainers
+        .map(child => buildDomTreeNode(child, depth + 1))
+        .filter(Boolean);
+
+      return {
+        tag: tagName,
+        id: idStr,
+        class: classStr,
+        heading: headingText,
+        stats: statsArr.join(' • '),
+        children: childrenNodes
+      };
+    }
+
+    const mainContainer = document.querySelector('main') || document.body;
+    const structureTree = {
+      tag: 'DOCUMENT',
+      children: Array.from(document.body.children)
+        .filter(child => ['HEADER', 'NAV', 'MAIN', 'SECTION', 'FOOTER', 'FORM', 'DIV'].includes(child.tagName))
+        .slice(0, 8)
+        .map(child => buildDomTreeNode(child, 1))
+        .filter(Boolean)
+    };
+
+    // 6. Container & Layout Grid
     const containerEl = document.querySelector('main, .container, #app, #root');
     const containerSt = containerEl ? window.getComputedStyle(containerEl) : null;
     const containerWidth = containerSt && containerSt.maxWidth !== 'none' ? containerSt.maxWidth : null;
@@ -197,7 +252,8 @@
         hero: heroSpec,
         buttons: buttonsSpec,
         cards: cardsSpec
-      }
+      },
+      structureTree: structureTree
     };
   }
 
