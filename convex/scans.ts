@@ -2,7 +2,10 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
- * Save site scan progress into Convex database
+ * StackVibe - Convex Scan History Functions
+ * Stores and manages user scan progress history in Convex Cloud DB.
+ * 
+ * @module convex/scans
  */
 export const saveScan = mutation({
   args: {
