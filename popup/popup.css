@@ -1,4 +1,5 @@
-/* StackVibe Developer Inspection Console Stylesheet */
+/* StackVibe Developer Inspection Console Stylesheet v2.0 */
+/* Includes Apple-inspired glassmorphism, responsive tab panels, and security question auth components. */
 
 :root, html[data-theme="light"] {
   --bg-main: #F8FAFC;
