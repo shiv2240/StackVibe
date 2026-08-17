@@ -1,6 +1,8 @@
 /**
  * StackVibe - Background Service Worker (Manifest V3)
- * Universal Web Technology Fingerprinting Engine & Evidence Graph
+ * Multi-layer technology fingerprinting runner, dual-world tab executor, and extension messaging bus.
+ * 
+ * @module background/service_worker
  */
 
 chrome.runtime.onInstalled.addListener(() => {
