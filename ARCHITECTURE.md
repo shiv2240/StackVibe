@@ -120,7 +120,7 @@ StackVibe uses a **weighted multi-signal scoring engine** defined in `lib/tech_s
 
 ### 3. Page Structure Architecture Tree
 Generates a structural layout hierarchy tree representing the page:
-`DOCUMENT` ➔ `HEADER` ➔ `HERO` ➔ `COMPONENTS` ➔ `FOOTER`
+`DOCUMENT` -> `HEADER` -> `HERO` -> `COMPONENTS` -> `FOOTER`
 
 ---
 
@@ -133,20 +133,20 @@ Generates a structural layout hierarchy tree representing the page:
 
 2. **Implementation Strategy Resolver (`resolveImplementation`)**:
    Automatically matches the target website's detected framework:
-   - **Next.js** ➔ `Next.js App Router (TypeScript) + React + Tailwind CSS / CSS Modules`
-   - **Nuxt** ➔ `Nuxt 3 (TypeScript) + Vue.js 3 + Scoped CSS`
-   - **Svelte / SvelteKit** ➔ `SvelteKit (TypeScript) + Svelte + CSS`
-   - **Angular** ➔ `Angular (TypeScript) + SCSS`
-   - **Default** ➔ `Semantic HTML5 + Modern CSS3 + Vanilla JavaScript`
+   - **Next.js** -> `Next.js App Router (TypeScript) + React + Tailwind CSS / CSS Modules`
+   - **Nuxt** -> `Nuxt 3 (TypeScript) + Vue.js 3 + Scoped CSS`
+   - **Svelte / SvelteKit** -> `SvelteKit (TypeScript) + Svelte + CSS`
+   - **Angular** -> `Angular (TypeScript) + SCSS`
+   - **Default** -> `Semantic HTML5 + Modern CSS3 + Vanilla JavaScript`
 
-3. **`RECONSTRUCTION MODE` Prompts**:
+3. **RECONSTRUCTION MODE Prompts**:
    Instructs AI agents with strict reconstruction laws:
    - *This is a RECONSTRUCTION task, NOT a creative redesign.*
    - *Do NOT redesign or "modernize" the interface.*
    - *Do NOT introduce arbitrary dark/light themes that differ from extracted evidence.*
    - *Preserve extracted layout hierarchy, component density, and component proportions.*
 
-4. **`INSPIRE MODE` Prompts (Design Mixer)**:
+4. **INSPIRE MODE Prompts (Design Mixer)**:
    Generates prompts for creative design blending (e.g. Hero from Stripe + Nav from Linear + Buttons from Vercel + Cards from Airbnb).
 
 ---
