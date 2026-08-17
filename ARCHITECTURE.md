@@ -1,164 +1,191 @@
-# StackVibe — Internal Architecture & AI System Specification
+# StackVibe — Internal Architecture & Engineering Specification
 
-> **AI Context Reference**: This document provides a complete technical explanation of how **StackVibe** operates internally. Share this file directly with any AI model (Claude, Cursor, Antigravity, ChatGPT) to give it full context on the architecture, data flow, detection algorithms, and cloud integration.
-
----
-
-## 1. System Overview & Core Architecture
-
-StackVibe is built as a Chrome Extension (Manifest V3) paired with an interactive Web Studio and a Convex Cloud backend.
-
-```
-+-----------------------------------------------------------------------------------+
-|                                STACKVIBE PLATFORM                                 |
-+-----------------------------------------------------------------------------------+
-|  [Chrome Extension Popup]  <--->  [Background Service Worker] <---> [Convex Cloud] |
-|        |                                    |                                     |
-|        v                                    v                                     |
-|  [Popup UI Tabs]                 [scripting.executeScript]                        |
-|  - Stack Breakdown                1. MAIN World Execution (Window Inspector)      |
-|  - Design Spec (getdesign.md)     2. ISOLATED World Execution (Computed Styles)   |
-|  - AI Prompt Builder                        |                                     |
-|  - Figma/Stitch Exporters                   v                                     |
-|  - Auth & User Roles              [Active Tab DOM Context]                        |
-+-----------------------------------------------------------------------------------+
-```
+> **AI Context Reference**: This document provides a complete technical explanation of **StackVibe**'s internal architecture, data pipeline, dual-world detection engine, component geometry extractor, zero-hallucination prompt generator, and Convex cloud integration. Share this document directly with any AI agent (Claude, Cursor, Antigravity, ChatGPT) for full codebase context.
 
 ---
 
-## 2. Dual-World Execution Architecture (Manifest V3)
+## 1. Executive Summary & Core Engineering Philosophy
 
-### The Chrome Security Challenge
-In Chrome Manifest V3, standard content scripts run inside an **Isolated Sandbox World**. Global JavaScript variables created by the target web page (such as `window.React`, `window.__NEXT_DATA__`, `window.Vue`, `window.webpackChunk`) are hidden from isolated content scripts.
+StackVibe is designed as a **Developer Web Inspection & Reconstruction Console**. Unlike basic design tools that extract static hex codes or guess tech stacks from single CSS classes, StackVibe operates as a **forensic web intelligence pipeline**:
 
-### The Solution: Dual-World Inline Function Injection Flow
-To bypass this limitation, StackVibe uses an inline execution pipeline managed by `background/service_worker.js`:
-
+```text
+                                TARGET WEBPAGE
+                                      │
+              ┌───────────────────────┴───────────────────────┐
+              │                                               │
+   MAIN WORLD INSPECTION                           ISOLATED WORLD SCAN
+   (Window Globals, React Fibers,                  (DOM Geometry, Computed
+    Bundles, Script Signatures)                     Styles, Semantic Roles)
+              │                                               │
+              └───────────────────────┬───────────────────────┘
+                                      │
+                         MULTI-LAYER EVIDENCE GRAPH
+                         (Direct vs Inferred Tagging)
+                                      │
+                        ZERO-HALLUCINATION EXPORTER
+                 (RECONSTRUCTION MODE vs INSPIRE MODE)
+                                      │
+              ┌───────────────────────┴───────────────────────┐
+              │                                               │
+     AI RECONSTRUCTION DIRECTIVE                    CONVEX CLOUD SYNC
+   (Claude, GPT-4o, Cursor, Lovable)              (Scans, User Accounts)
 ```
-Phase 1: MAIN World Execution (Confidence Scanner)
---------------------------------------------------
-Background SW calls:
+
+---
+
+## 2. Dual-World Execution Pipeline (Chrome MV3)
+
+### Why Dual-World Execution Is Mandatory
+In Chrome Extension Manifest V3, standard content scripts run inside an **Isolated Sandbox World**. Global JavaScript variables created by the target web page (e.g., `window.React`, `window.__NEXT_DATA__`, `window.Vue`, `window.webpackChunk`, `window.Polymer`, `window.Shaka`) are invisible to isolated content scripts. 
+
+Furthermore, browser extensions like React DevTools inject `window.__REACT_DEVTOOLS_GLOBAL_HOOK__` on *every* page, causing naive detectors to falsely report React on non-React websites (e.g. YouTube or Apple Store).
+
+### How StackVibe Solves This
+StackVibe uses a two-phase inline execution pipeline managed by `background/service_worker.js`:
+
+```text
+Phase 1: MAIN World Execution (Window & Fiber Inspector)
+--------------------------------------------------------
+Background SW invokes:
 chrome.scripting.executeScript({
   target: { tabId },
   world: "MAIN",
   func: mainWorldConfidenceScanner
 })
 
-=> Executes directly inside target page's real window scope.
-=> Reads window.React, window.__NEXT_DATA__, window.Vue, window.webpackChunk,
-   and dynamic React Fiber properties (__reactFiber$*, __reactProps$*) across high-probability elements.
-=> Returns: Array of detected tech objects [{ id, name, category, icon, color, description, confidence }] directly via results[0].result.
+1. Scope Serialization Safety: Self-contains all helper functions within mainWorldConfidenceScanner to prevent MV3 serialization ReferenceErrors.
+2. DevTools Bypassing: Verifies renderers.size > 0 or checks real DOM Fiber properties (__reactFiber$*, __reactProps$*) on page elements.
+3. Multi-Layer Signals: Inspects 500 DOM elements, window global objects, <script src> paths, <link href> stylesheets, and meta tags.
+4. Output: Array of technology objects with confidence percentages, category tags, and explicit evidence lines.
 
-Phase 2: ISOLATED World Execution (Design Spec Extractor)
----------------------------------------------------------
-Background SW calls:
+Phase 2: ISOLATED World Execution (Computed Style & Geometry Extractor)
+-------------------------------------------------------------------------
+Background SW invokes:
 chrome.scripting.executeScript({
   target: { tabId },
   files: ["content/design_extractor.js"]
 })
 
-=> Executes in ISOLATED world to compute DOM styles via window.getComputedStyle().
-=> Extracts: Colors (HEX, HSL, RGB), Typography hierarchy, Border radii, Box shadows, Container bounds.
-=> Returns: Complete designSpec JSON object.
+1. Computes DOM styles via window.getComputedStyle().
+2. Samples page elements to build a semantic color frequency map (canvas-bg, surface-bg, button-bg, header-bg, heading-text).
+3. Extracts component geometry (Header height/position, Hero split, Button heights/radii, Card elevation shadows).
+4. Output: Complete designSpec JSON object.
 ```
 
 ---
 
-## 3. Confidence & Weighted Scoring Fingerprinting Engine (`lib/tech_signatures.js` & `background/service_worker.js`)
+## 3. Universal Fingerprinting & Evidence Graph Engine
 
-Instead of binary single-point detectors (which miss bundled production frameworks), StackVibe uses a **Weighted Confidence Scoring Engine**:
+StackVibe uses a **weighted multi-signal scoring engine** defined in `lib/tech_signatures.js` and `background/service_worker.js`:
 
-### React Detection Signals:
-- **React Fiber / Props Property** on DOM elements (`Object.keys(el).some(k => k.startsWith("__reactFiber$") || ...)`): **+5 Confidence**
-- **Next.js Asset / Data Detection** (`_next/static`, `__NEXT_DATA__`): **+5 Confidence**
-- **React Window Scope / Devtools Hook** (`window.React`, `window.__REACT_DEVTOOLS_GLOBAL_HOOK__`): **+4 Confidence**
-- **React DOM Root / Attribute Markers** (`[data-reactroot]`, `[data-reactid]`): **+4 Confidence**
-- **Script Tag Bundle Source Regex** (`react.production.min.js`, `chunks/framework`): **+3 Confidence**
+### Multi-Layer Signal Rules:
 
-> **Threshold**: If total `reactScore >= 3`, React is flagged as **Detected**.
+| Technology | Inspected Signals & Evidence Criteria | Weight | Detection Tag |
+| :--- | :--- | :--- | :--- |
+| **Next.js** | `__NEXT_DATA__` window object, `/_next/static/` script paths, `#__next` root element | +55% | `Direct` |
+| **React** | Real DOM Fiber keys (`__reactFiber$`, `__reactProps$`), `React.version`, `[data-reactroot]` | +45% | `Direct` / `Inferred` |
+| **Nuxt 3** | `__NUXT__` window object, `/_nuxt/` bundle paths, `#__nuxt` container | +55% | `Direct` |
+| **Vue.js** | `__VUE__` window flag, `__vue_app__` DOM key, `data-v-*` scoping attributes | +45% | `Direct` |
+| **Svelte / SvelteKit** | `__svelte` window key, `svelte-` CSS class prefix, `/_app/immutable/` bundle paths | +50% | `Direct` |
+| **Angular** | `ng-version` attribute, `window.ng`, `ng-` component prefixes | +50% | `Direct` |
+| **Polymer / Google Wiz** | `window.Polymer`, `wiz-` attributes, custom element definitions (`customElements.get()`) | +50% | `Direct` |
+| **Shaka Player** | `window.shaka`, HTML5 `<video>` DASH/HLS player instances | +45% | `Direct` |
+| **Tailwind CSS** | Standard utility class patterns (`flex`, `grid`, `bg-`, `text-`, `rounded-`, `shadow-`), `@media` breakpoints | +40% | `Inferred` |
 
----
-
-## 4. Where AI Enhances StackVibe
-
-StackVibe uses **deterministic fingerprinting** for 100% reliable framework identification, reserving AI for high-value synthesis:
-
-```
-Website -> Deterministic Engine -> Extracted Design Spec & Stack -> AI Layer -> getdesign.md / AI Prompts / Code Generation
-```
-
----
-
-## 5. Design Language Extraction Engine (`content/design_extractor.js`)
-
-Extracts design tokens directly from computed styles of key visible DOM elements (`body`, `h1-h6`, `button`, `a`, `card`, `main`, `container`).
-
-### Extracted Spec Data Model:
-```typescript
-interface DesignSpec {
-  background: string;         // HEX string e.g. "#0F172A"
-  surfaceColor: string;       // Card background e.g. "#1E293B"
-  textColor: string;          // Main text e.g. "#F8FAFC"
-  colors: Array<{
-    hex: string;              // "#6366F1"
-    hsl: string;              // "hsl(239, 84%, 67%)"
-    role: string;             // "Primary Accent" | "Main Background" | "Surface"
-  }>;
-  typography: {
-    fontFamily: string;       // "Inter, -apple-system, sans-serif"
-    h1Size: string;           // "36px"
-    h1Weight: string;         // "700"
-    bodySize: string;         // "16px"
-    bodyWeight: string;       // "400"
-  };
-  radius: {
-    sm: string;               // "4px"
-    md: string;               // "8px"
-    lg: string;               // "16px"
-  };
-  shadows: string[];          // Box shadow CSS strings
-  spacing: {
-    containerWidth: string;   // "1280px"
-    containerPadding: string; // "24px"
-    gridGap: string;          // "24px"
-  };
-}
-```
+### Direct vs. Inferred Tagging Logic
+- **Direct**: Flagged when runtime global objects (`window.Next.js`, `__NEXT_DATA__`) or exact DOM Fiber properties (`__reactFiber$`) are verified.
+- **Inferred**: Flagged when a secondary technology is deduced via architectural dependency (e.g., `Next.js` direct detection implies `React` inferred detection).
 
 ---
 
-## 5. Multi-Format Exporter System (`lib/export_engine.js`)
+## 4. DOM Component Geometry & Structural Forensics Engine (`content/design_extractor.js`)
 
-Converts the raw `techStack` and `designSpec` into five output formats:
+`content/design_extractor.js` performs DOM style and spatial geometry extraction across the DOM tree:
 
-1. **getdesign.md Markdown Format**: Structured design guide containing color tables, typography scale, component blueprints (Buttons, Cards, Inputs), and layout rules.
-2. **AI Prompt Builder**: Formatted prompt ready to copy/paste into LLMs (Cursor, Claude 3.7, Antigravity, ChatGPT) specifying exact tech choices, HEX colors, fonts, and radii.
-3. **Figma Tokens Studio JSON**: W3C design tokens JSON schema importable into Figma Tokens Studio.
-4. **Stitch / Code Editor**: Self-contained React + Tailwind component snippet featuring extracted colors and responsive bounds.
-5. **Tailwind Config & CSS Variables**: `tailwind.config.js` extend theme block & `:root` custom properties.
+### 1. Semantic Color Analysis & Frequency Count
+- Samples up to 150 page elements.
+- Records color occurrence frequency and assigns semantic usage roles:
+  - `canvas-bg`: Main document canvas color
+  - `surface-bg`: Card or section container background
+  - `button-bg`: Action element background color
+  - `header-bg`: Navigation container color
+  - `heading-text`: H1-H3 text color
+- Calculates document lightness mode (`isLightMode: true/false`).
+
+### 2. Component Geometry Extraction
+- **Header & Navigation**: Height, positioning (`sticky`, `fixed`, `relative`), background color, bottom border, nav link count.
+- **Hero Section**: Column layout geometry (`Two-Column Split` vs `Single Column Flow`), heading text preview, primary CTA button text.
+- **Action Buttons**: Exact computed height, background color, text color, font weight, font size, padding, and corner radius.
+- **Card Surfaces**: Background color, corner radius, border, and elevation shadow.
+
+### 3. Page Structure Architecture Tree
+Generates a structural layout hierarchy tree representing the page:
+`DOCUMENT` ➔ `HEADER` ➔ `HERO` ➔ `COMPONENTS` ➔ `FOOTER`
 
 ---
 
-## 6. Convex Cloud Backend Architecture (`convex/`)
+## 5. Zero-Hallucination AI Export Engine (`lib/export_engine.js`)
 
-Convex backend deployment at `https://oceanic-dolphin-290.convex.cloud`.
+### Engineering Directives & Rules
+1. **Zero Hallucination Policy**:
+   - The exporter **never** injects hardcoded fallbacks (`#4F46E5`, `#10B981`, `Inter`, `8px` radius).
+   - If a property was un-detected on the target page, the exporter explicitly outputs `Not detected / Browser default`.
+
+2. **Implementation Strategy Resolver (`resolveImplementation`)**:
+   Automatically matches the target website's detected framework:
+   - **Next.js** ➔ `Next.js App Router (TypeScript) + React + Tailwind CSS / CSS Modules`
+   - **Nuxt** ➔ `Nuxt 3 (TypeScript) + Vue.js 3 + Scoped CSS`
+   - **Svelte / SvelteKit** ➔ `SvelteKit (TypeScript) + Svelte + CSS`
+   - **Angular** ➔ `Angular (TypeScript) + SCSS`
+   - **Default** ➔ `Semantic HTML5 + Modern CSS3 + Vanilla JavaScript`
+
+3. **`RECONSTRUCTION MODE` Prompts**:
+   Instructs AI agents with strict reconstruction laws:
+   - *This is a RECONSTRUCTION task, NOT a creative redesign.*
+   - *Do NOT redesign or "modernize" the interface.*
+   - *Do NOT introduce arbitrary dark/light themes that differ from extracted evidence.*
+   - *Preserve extracted layout hierarchy, component density, and component proportions.*
+
+4. **`INSPIRE MODE` Prompts (Design Mixer)**:
+   Generates prompts for creative design blending (e.g. Hero from Stripe + Nav from Linear + Buttons from Vercel + Cards from Airbnb).
+
+---
+
+## 6. Convex Cloud Backend Architecture (`convex/` & `lib/convex_client.js`)
+
+StackVibe connects to a **Convex Cloud Backend** (`https://oceanic-dolphin-290.convex.cloud`).
 
 ### Database Schema (`convex/schema.ts`):
-- `users` table (indexed by `email`): Stores `name`, `email`, `passwordHash`, `role`, `avatar`, `createdAt`.
-- `scans` table (indexed by `userId`): Stores `userId`, `url`, `title`, `techStack`, `designSpec`, `timestamp`.
+```typescript
+// users table
+users: defineTable({
+  name: v.string(),
+  email: v.string(),
+  passwordHash: v.string(),
+  role: v.optional(v.string()), // e.g. "Frontend Engineer", "UI/UX Designer"
+  avatar: v.string(),
+  createdAt: v.number(),
+}).index("by_email", ["email"])
 
-### Mutations & Queries:
-- `convex/users.ts`: `register`, `login`, `getUserByEmail`.
-- `convex/scans.ts`: `saveScan`, `getScansByUser`, `deleteScan`, `clearAllScans`.
+// scans table
+scans: defineTable({
+  userId: v.string(),
+  url: v.string(),
+  title: v.string(),
+  techStack: v.any(),
+  designSpec: v.any(),
+  timestamp: v.number(),
+}).index("by_user", ["userId"])
+```
 
-### Convex HTTP Client (`lib/convex_client.js`):
-Communicates with Convex HTTP mutations & queries (`/api/mutation`, `/api/query`) directly from the extension popup or web dashboard without requiring heavy npm bundles at runtime.
+### Convex HTTP Client Wrapper (`lib/convex_client.js`):
+Communicates with Convex HTTP query and mutation endpoints (`/api/query`, `/api/mutation`) directly from the extension popup or web dashboard without requiring heavy node runtime dependencies.
 
 ---
 
-## 7. How an AI Can Extend StackVibe
+## 7. How an AI Agent Should Extend StackVibe
 
-When working on or extending this project, an AI can follow these patterns:
-- **To add a new Tech Signature**: Add an object to `TECH_SIGNATURES` in `lib/tech_signatures.js` with `id`, `name`, `category`, `icon`, `color`, `description`, and a `detect: (win, doc) => boolean` function.
-- **To add a new Export Format**: Add a static method to `ExportEngine` in `lib/export_engine.js`.
-- **To add a new Convex Table or Query**: Add the table definition in `convex/schema.ts` and export the query/mutation in `convex/`.
+When extending this codebase:
+- **To add a new Technology Signature**: Add an entry to `TECH_SIGNATURES` in `lib/tech_signatures.js` with `id`, `name`, `category`, `icon`, `color`, `description`, and a detection function.
+- **To add a new AI Export Target or Format**: Add a target handler to `toAIPromptForTarget` or add a new static method in `lib/export_engine.js`.
+- **To modify UI Components or Styling**: Update `popup/popup.html`, `popup/popup.css`, and `popup/popup.js`.

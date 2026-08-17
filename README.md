@@ -1,87 +1,97 @@
-# StackVibe — Tech Stack & Design Language Extractor
+# StackVibe — Web Technology Fingerprinting & UI Reconstruction Console
 
-⚡ **StackVibe** is a high-performance Chrome Extension (Manifest V3) and Web Studio that inspects any website to instantly identify its frontend tech stack (React, Next.js, Vue, Tailwind CSS, Bootstrap, etc.) and extract a complete `getdesign.md` style design system spec, tailored AI prompts, Figma tokens, and code editor snippets.
+⚡ **StackVibe** is an evidence-first Chrome Extension (Manifest V3) and Web Intelligence Console that inspects any website to instantly identify its full frontend technology graph (React, Next.js, Vue, SvelteKit, Angular, Nuxt, Tailwind CSS, Polymer, Shaka Player, etc.), extract computed design forensics (`getdesign.md`), and generate zero-hallucination **AI Reconstruction Directives** for Claude, GPT-4o, Gemini, Cursor, Lovable, and Manus.
 
-Powered by a **Convex Cloud Backend** for user authentication and cloud scan history synchronization.
-
----
-
-## 🌟 Key Features
-
-- **⚡ High-Precision Tech Stack Detection**:
-  - Detects 20+ frameworks and libraries: React, Next.js, Vue.js, Nuxt.js, Angular, Svelte/SvelteKit, Remix, Astro, Tailwind CSS, Bootstrap, Material UI (MUI), Chakra UI, Styled Components, Webflow, Shopify, WordPress, Framer, Vite, Webpack.
-  - **Dual-World Execution Engine**: Uses Chrome's `MAIN` world execution context to access real page JavaScript objects (`window.React`, `window.__NEXT_DATA__`, `window.Vue`, `window.webpackChunk`) even on production minified sites.
-
-- **🎨 Design Language Extractor (`getdesign.md` Inspired)**:
-  - **Color Palette Breakdown**: Primary, secondary, accent, background, and surface colors with HEX, HSL, RGB, and visual swatches.
-  - **Typography Scale**: Font family hierarchy, H1/H2 font sizes & weights, body typography rules, line heights.
-  - **Layout & Spacing Tokens**: Border radius scales (sm, md, lg, pill), box-shadow presets, container max-widths, grid gaps.
-
-- **☁️ Convex Cloud Backend & User Accounts**:
-  - Real-time cloud user authentication and scan progress saving using **Convex** (`https://oceanic-dolphin-290.convex.cloud`).
-  - Customizable User Roles: Select and update your role (*Frontend Engineer*, *UI/UX Designer*, *Full Stack Developer*, *Backend Engineer*, *Mobile Developer*, *Product Manager*, etc.).
-
-- **📤 Multi-Format Export Suite**:
-  1. **getdesign.md Markdown**: Human-readable design language guide.
-  2. **AI Prompt Generator**: System & user prompt optimized for Cursor, Claude 3.7, Antigravity, and ChatGPT.
-  3. **Figma Tokens JSON**: Compatible with Figma Tokens / Tokens Studio.
-  4. **Stitch & Code Editors**: Copy-ready React + Tailwind component blueprints.
-  5. **Tailwind Config & CSS Variables**: `tailwind.config.js` extend theme block & `:root` custom properties.
+Powered by a **Convex Cloud Backend** for user authentication and real-time cloud scan synchronization.
 
 ---
 
-## 📁 File Structure
+## 💡 Why StackVibe Was Built
+
+### The Problem with Traditional Technology & Design Extractors
+1. **Generic AI Prompts**: Most tools extract a few HEX colors and output generic prompts that invent dark themes, hardcode fallbacks (`#4F46E5`, `Inter`, `8px` radius), and tell AI to *"make a modern UI"*. The resulting code looks completely different from the target website.
+2. **False Positives & Surface-Level Detection**: Checking `window.React` or CSS classes fails on minified production sites, DevTools-injected hooks, or custom web components (e.g., YouTube's Polymer/Wiz/Shaka Player architecture or Apple's SvelteKit web store).
+3. **Missing Component Geometry**: Extracting text colors is useless without knowing header heights, CTA button geometry, hero section column structures, and card surface elevation shadows.
+
+### How StackVibe Solves This
+- **Universal Evidence Engine**: Multi-layer scanner inspecting 500 DOM elements, `<script>` bundles, `<link>` stylesheets, meta tags, and `window` globals with direct evidence lines (`Direct` vs `Inferred`).
+- **Zero-Hallucination Policy**: If a property is not detected on the target site, StackVibe outputs `Not detected / Browser default`. It never fabricates fallback colors or fonts.
+- **Strict `RECONSTRUCTION MODE` Prompts**: Directs AI agents to reconstruct the target website faithfully without unsolicited redesigns.
+- **Component Geometry Forensics**: Computes actual layout bounds for headers, hero sections, action buttons, card surfaces, and DOM architecture trees.
+
+---
+
+## 🌟 Key Features & Architecture
+
+### 1. ⚡ High-Precision Universal Tech Stack Fingerprinting
+- **20+ Frameworks & Libraries**: React, Next.js, Vue.js, Nuxt 3, Angular, Svelte/SvelteKit, Polymer, Google Wiz, Shaka Player, Tailwind CSS, Bootstrap, Material UI, Chakra UI, Webflow, Shopify, WordPress, Vite, Webpack.
+- **Dual-World Execution Engine**: Uses Chrome's `MAIN` world context to inspect real runtime objects (`window.React`, `window.__NEXT_DATA__`, `window.Vue`, `window.webpackChunk`) combined with an `ISOLATED` world computed style extractor.
+- **Evidence-Tagged Output**: Every signature records explicit evidence lines (`__NEXT_DATA__`, `/_next/static/`, `__reactFiber$`) and calculates confidence percentages.
+
+### 2. 🎨 Computed Design Forensics & Geometry (`getdesign.md`)
+- **Semantic Color & Frequency Mapping**: Counts element color frequency and tags semantic usage roles (`canvas-bg`, `surface-bg`, `button-bg`, `header-bg`, `heading-text`).
+- **Typography Scale**: Actual computed font families, H1/H2 font sizes & weights, body typography rules, and line heights.
+- **Component Geometry & Blueprints**: Inspected heights, background colors, text colors, padding, corner radii, and box shadows for headers, hero sections, buttons, and surface cards.
+- **Page Architecture Tree**: DOM layout hierarchy tree (`DOCUMENT` ➔ `HEADER` ➔ `HERO` ➔ `COMPONENTS` ➔ `FOOTER`).
+
+### 3. 🤖 Evidence-First AI Reconstruction Engine
+- **Target AI Routing**: Tailored output for **Claude**, **GPT-4o**, **Gemini**, **Cursor**, **Lovable**, and **Manus**.
+- **AI Task Selector**: `Reconstruct Website` (Default), `Recreate Selected Component`, `Generate Implementation Prompt`, `Explain Architecture`, `Generate Design Tokens`.
+- **Dynamic Stack Resolver**: Automatically selects implementation targets (e.g. Next.js App Router + TypeScript, Nuxt 3 + Vue, SvelteKit + Svelte, or Semantic HTML5 + CSS3).
+
+### 4. 🔀 Design Mixer (Inspiration Lab)
+- Allows developers to blend design elements from saved sites (e.g. Hero from Stripe + Navigation from Linear + Buttons from Vercel + Cards from Airbnb) into a unified prompt.
+
+### 5. ☁️ Convex Cloud Backend & Snap Library
+- Real-time cloud authentication & scan history saving via **Convex** (`https://oceanic-dolphin-290.convex.cloud`).
+- **Snap Library Grid**: Displays saved site snapshots rendered with their actual extracted brand colors and canvas backgrounds.
+
+---
+
+## 📁 Repository Structure
 
 ```
 .
-├── manifest.json                 # Manifest V3 Extension Configuration
+├── manifest.json                 # Chrome Extension Manifest V3 Config
 ├── package.json                  # NPM dependencies (convex)
-├── convex.json                   # Convex project config
-├── .env                          # Convex cloud deployment credentials
-├── StackVibe_Chrome_Extension.zip# Compiled ready-to-upload Extension ZIP
+├── convex.json                   # Convex cloud project configuration
+├── StackVibe_Chrome_Extension.zip# Re-compiled Extension distribution package
 ├── convex/                       # Convex Cloud Backend
 │   ├── schema.ts                 # Database schema (users, scans)
-│   ├── users.ts                  # Auth & user queries/mutations
-│   └── scans.ts                  # Scan progress queries/mutations
-├── popup/                        # Extension Popup Interface
-│   ├── popup.html                # Dark glassmorphic popup UI
-│   ├── popup.css                 # Styling & animations
-│   └── popup.js                  # Popup interface controller
+│   ├── users.ts                  # Auth & user mutations/queries
+│   └── scans.ts                  # Scan history mutations/queries
+├── popup/                        # Developer Inspection Console Interface
+│   ├── popup.html                # Apple-inspired glassmorphic console UI
+│   ├── popup.css                 # Dark/Light CSS design system & animations
+│   └── popup.js                  # Console state & view controller
 ├── content/                      # Content Scripts
-│   ├── main_world_detector.js    # MAIN world window inspector (React/Vue/Next/Webpack)
-│   ├── detector.js               # Isolated world fallback scanner
-│   └── design_extractor.js       # Computed style & design token extractor
-├── background/                   # Background Service Worker
-│   └── service_worker.js         # Tab execution runner & messaging
-├── lib/                          # Shared Engine Core
-│   ├── tech_signatures.js        # Stack detection fingerprints
-│   ├── auth.js                   # Auth & storage manager
-│   ├── export_engine.js          # Multi-format exporters
+│   ├── main_world_detector.js    # MAIN world window inspector
+│   ├── detector.js               # ISOLATED world DOM scanner
+│   └── design_extractor.js       # Geometry & computed style extractor
+├── background/                   # Service Worker
+│   └── service_worker.js         # Multi-layer fingerprinting runner & tab messaging
+├── lib/                          # Core Shared Engine
+│   ├── tech_signatures.js        # Technology fingerprint signatures & rules
+│   ├── export_engine.js          # Zero-hallucination AI prompt & markdown generator
+│   ├── auth.js                   # Auth & cloud storage manager
 │   ├── storage.js                # Chrome & local storage wrapper
-│   └── convex_client.js          # Convex HTTP client wrapper
-├── test_dashboard/               # In-Browser Web App & Test Studio
-│   ├── index.html                # Web App UI
-│   ├── styles.css                # Web App stylesheet
-│   └── app.js                    # Web App controller & preset scanner
-└── ARCHITECTURE.md               # Detailed internal architecture guide for AI & Developers
+│   └── convex_client.js          # Convex HTTP API client wrapper
+└── ARCHITECTURE.md               # Deep technical specification & AI reference guide
 ```
 
 ---
 
-## 🚀 Quick Start & Installation
+## 🚀 Installation & Usage
 
-### 1. Load Chrome Extension Locally (Unpacked)
-1. Open Google Chrome and go to `chrome://extensions`.
-2. Turn ON **Developer mode** in the top-right corner.
-3. Click **Load unpacked** and select this directory.
-4. Pin **StackVibe** to your toolbar and open it on any website!
+### 1. Load Chrome Extension Locally
+1. Open Chrome and navigate to `chrome://extensions`.
+2. Enable **Developer mode** in the top-right toggle.
+3. Click **Load unpacked** and select `d:\Freelance\Project-11 (Get UI)`.
+4. Pin **StackVibe** to your browser toolbar and click **Inspect Page** on any site!
 
-### 2. Test in Web Browser Studio
-Open [`test_dashboard/index.html`](file:///d:/Freelance/Project-11%20%28Get%20UI%29/test_dashboard/index.html) in your browser to inspect preset sites (Stripe, Next.js, Tailwind, Shopify, Webflow) or custom URLs.
-
-### 3. Convex Cloud Deployment
-Convex backend is live deployed at `https://oceanic-dolphin-290.convex.cloud`.  
-To modify or deploy new Convex functions:
+### 2. Convex Backend Setup
+Backend is deployed live at `https://oceanic-dolphin-290.convex.cloud`.  
+To run Convex locally or modify schema:
 ```bash
 npx convex dev
 ```
@@ -89,4 +99,4 @@ npx convex dev
 ---
 
 ## 📜 License
-ISC License. Built for modern web engineers & UI designers.
+ISC License. Built for frontend engineers, UI/UX designers, and AI developers.
