@@ -1,0 +1,111 @@
+================================================================================
+STACKVIBE CHROME WEB STORE OFFICIAL DESCRIPTION (16,000 CHARACTER CAPACITY)
+================================================================================
+
+StackVibe — Web Technology Fingerprinting & UI Reconstruction Console (v2.0.0)
+
+StackVibe is the ultimate evidence-first Developer Web Intelligence Console & Computed Design Spec Extractor. Designed for frontend engineers, UI/UX designers, software architects, and AI developers, StackVibe inspects any web page to instantly identify its complete technology stack, extract production-grade computed CSS design tokens, compute DOM component spatial geometry, and generate zero-hallucination AI Reconstruction Directives for Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, Cursor, Lovable, and Manus.
+
+Powered by a dual-world Manifest V3 execution engine and connected to a Convex Cloud Backend for real-time authentication and cloud scan synchronization.
+
+--------------------------------------------------------------------------------
+1. THE PROBLEM WITH TRADITIONAL EXTRACTORS VS. THE STACKVIBE SOLUTION
+--------------------------------------------------------------------------------
+
+The Problem with Generic Detectors & Design Scrapers:
+1. Generic AI Prompts: Most tools extract a few HEX colors and output vague prompts that invent dark themes, hardcode fabricated fallbacks (#4F46E5, Inter, 8px radius), and tell AI models to "make a modern UI". The resulting code looks completely different from the target website.
+2. Surface-Level False Positives: Checking single CSS classes or window globals fails on minified production bundles, DevTools-injected hooks (e.g., __REACT_DEVTOOLS_GLOBAL_HOOK__ injected on non-React sites), or custom web components (such as YouTube's Polymer/Wiz/Shaka Player architecture or Apple's SvelteKit web store).
+3. Missing Component Geometry: Extracting text colors is useless without knowing navbar heights, primary CTA button geometry, hero section column structures, and card surface elevation shadows.
+
+How StackVibe Solves This:
+- Universal Evidence Engine: Multi-layer scanner inspecting 500 DOM elements, <script> bundles, <link> stylesheets, meta tags, response headers, and window globals with explicit evidence lines (Direct vs Inferred).
+- Zero-Hallucination Policy: If a property is not detected on the target page, StackVibe outputs "Not detected / Browser default". It NEVER fabricates fallback colors or fonts.
+- Strict RECONSTRUCTION MODE Prompts: Directs AI agents to reconstruct the target website faithfully without unsolicited redesigns.
+- Component Geometry Forensics: Computes actual spatial bounds for headers, hero sections, action buttons, card surfaces, all 15+ document layout sections, and 6-level DOM architecture trees.
+
+--------------------------------------------------------------------------------
+2. KEY FEATURES & DEEP TECHNICAL CAPABILITIES
+--------------------------------------------------------------------------------
+
+✦ 1. HIGH-PRECISION UNIVERSAL TECH STACK FINGERPRINTING
+StackVibe inspects over 30+ frameworks, libraries, content management systems, analytics trackers, and CDN infrastructures:
+- Frontend Frameworks: React, Next.js App Router, Vue.js, Nuxt 3, Angular, Svelte/SvelteKit, Polymer, Google Wiz, Shaka Player.
+- UI Libraries & Styling: Tailwind CSS, Bootstrap, Material UI, Chakra UI, Webflow, CSS Modules, Styled Components.
+- E-Commerce & CMS: WordPress (theme name & active plugin paths like /wp-content/plugins/[name]/), Shopify (window.Shopify, cdn.shopify.com assets).
+- Analytics & Trackers: Google Analytics / GA4 (window.gtag, google-analytics.com), Google Tag Manager (GTM), Mixpanel, Hotjar, Segment, Facebook Pixel.
+- CDN & Cloud Infrastructure: Vercel, Cloudflare, Netlify, Nginx, Apache via response header inspection (X-Powered-By, Server, Via).
+- Dual-World Execution Engine: Uses Chrome's MAIN world context to inspect real runtime objects (window.React, window.__NEXT_DATA__, window.Vue, window.webpackChunk) combined with an ISOLATED world computed style extractor.
+- Evidence-Tagged Confidence Scores: Every signature records explicit evidence lines and calculates confidence percentages (%).
+
+✦ 2. COMPUTED DESIGN FORENSICS & GEOMETRY (getdesign.md)
+StackVibe generates a complete, production-ready getdesign.md design specification:
+- Semantic Color Frequency Mapping: Samples up to 150 page elements, counts occurrence frequency, and tags semantic usage roles (canvas-bg, surface-bg, button-bg, header-bg, heading-text).
+- Exact Typography Scale: Computes actual rendered font families, H1/H2 font sizes, font weights, body rules, and line heights.
+- Complete Sectional Geometry Extractor: Scans up to 15+ document sections, classifying semantic role (Hero Banner, Feature Showcase Grid, Pricing Table, Testimonials, FAQ Accordion, CTA Banner, Metrics Grid, Media Showcase, Interactive Form), column reflow, heights, padding, border radii, and shadow depth.
+- Action Buttons & Surface Cards: Inspects up to 10 distinct action buttons and 10 surface card containers.
+- 6-Level DOM Architecture Tree Graph: Renders structural layout tree with pixel dimensions (e.g. 1280x400px) and inline "Copy Tree Graph" buttons for quick export.
+
+✦ 3. ZERO-HALLUCINATION AI RECONSTRUCTION & PROFILING ENGINE
+- Target AI Routing: Tailored output formats optimized for Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, Cursor, Lovable, and Manus.
+- AI Task Selector:
+  * Reconstruct Website (Default RECONSTRUCTION MODE)
+  * Frontend Tech Profiler & Static Code Analyzer (Outputs a 100% accuracy JSON audit schema grouping frameworks_and_libraries, cms, plugins_and_themes, analytics_and_trackers, cdn_and_servers, ui_and_styling, confidence_score_percentage)
+  * Recreate Selected Component
+  * Generate Implementation Prompt
+  * Explain Architecture
+  * Generate Design Tokens
+- Dynamic Stack Resolver: Automatically selects exact implementation targets (e.g., Next.js App Router + TypeScript, Nuxt 3 + Vue, SvelteKit + Svelte, or Semantic HTML5 + CSS3).
+
+✦ 4. DESIGN MIXER (INSPIRATION LAB v2.0)
+The Inspiration Lab allows developers to blend design languages from multiple reference sites into a single master directive:
+- Custom Inspiration Links: Add custom URLs or domains (framer.com, apple.com, github.com) with persistent local storage.
+- Interactive Link Pills: Manage custom inspiration links with quick removal controls.
+- 6-Criteria Master Directives: Configure Target Stack, Component Scope, Visual Direction, Interactivity Level, Output Delivery Structure, and Custom Constraints.
+- Built-in Pattern Rationale Dictionary: Detailed design pattern explanations for top sites (Stripe, Linear, Vercel, Airbnb, Apple, Framer, Notion, Spotify).
+- Live UI Synthesis Rationale Card: Displays real-time explanation summaries explaining why and how selected design elements blend together.
+
+✦ 5. CONVEX CLOUD BACKEND & SNAP LIBRARY
+- Cloud Sync: Real-time cloud authentication & scan history saving via Convex Cloud (https://oceanic-dolphin-290.convex.cloud).
+- Snap Library Grid: Displays saved site snapshots rendered with actual extracted brand colors and canvas backgrounds.
+
+--------------------------------------------------------------------------------
+3. SECURITY, PRIVACY & MANIFEST V3 COMPLIANCE
+--------------------------------------------------------------------------------
+
+StackVibe is engineered with a strict privacy-first security architecture:
+- Zero Telemetry / Tracking: StackVibe does NOT track browsing history, keylog input fields, or transmit telemetry data to third-party analytics services.
+- Local Browser Processing: All technology fingerprinting and computed style extraction occur locally in your browser.
+- Manifest V3 Content Security Policy (CSP): Fully complies with Chrome Extension Manifest V3 strict CSP (script-src 'self'). Zero inline scripts or remote code execution.
+- Data Security: Optional account synchronization is encrypted and hosted on Convex Cloud.
+
+--------------------------------------------------------------------------------
+4. HOW TO USE STACKVIBE
+--------------------------------------------------------------------------------
+
+1. Inspect Any Website: Open any web page and click the StackVibe icon in your extension toolbar.
+2. View Tech Stack: Instantly inspect detected frameworks, CMS, analytics, CDN infrastructure, and direct evidence lines.
+3. Copy Design Spec (getdesign.md): Click "Copy Design Spec" to copy complete computed CSS tokens, typography scales, and component geometry.
+4. Generate AI Prompts: Select your target AI model (Claude, GPT-4o, Cursor, Lovable) and task type, then click "Copy AI Prompt".
+5. Mix Design Inspiration: Navigate to the Design Mixer tab, pick inspiration sources for Hero, Nav, Buttons, and Cards (or enter custom URLs), and copy the Master Inspiration Directive.
+
+--------------------------------------------------------------------------------
+5. FREQUENTLY ASKED QUESTIONS (FAQ)
+--------------------------------------------------------------------------------
+
+Q: Does StackVibe work on minified or production websites?
+A: Yes! StackVibe's MAIN-world detector inspects real runtime window objects, DOM Fibers, script bundle paths, and response headers, successfully identifying tech stacks even on minified codebases.
+
+Q: Can I use StackVibe prompts with AI code builders like Cursor, Lovable, or Claude?
+A: Absolutely! StackVibe's export engine generates zero-hallucination RECONSTRUCTION MODE prompts specifically formatted for Claude 3.5 Sonnet, GPT-4o, Cursor, Lovable, and Manus.
+
+Q: Is StackVibe free to use?
+A: Yes! StackVibe is free for developers, designers, and software engineers.
+
+--------------------------------------------------------------------------------
+6. OFFICIAL LINKS & SUPPORT
+--------------------------------------------------------------------------------
+
+- GitHub Repository: https://github.com/shiv2240/StackVibe
+- Issue Tracker & Support: https://github.com/shiv2240/StackVibe/issues
+- Convex Cloud Backend: https://oceanic-dolphin-290.convex.cloud
+- License: ISC License
