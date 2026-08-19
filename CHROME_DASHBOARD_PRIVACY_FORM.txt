@@ -1,0 +1,81 @@
+================================================================================
+CHROME DEVELOPER DASHBOARD — PRIVACY TAB COPY-PASTE FORM GUIDE
+================================================================================
+
+Copy and paste the exact text below into the corresponding fields on your Chrome Developer Dashboard Privacy practices tab.
+
+--------------------------------------------------------------------------------
+1. SINGLE PURPOSE
+--------------------------------------------------------------------------------
+
+[Single purpose description] (Limit: 1,000 characters | Current: 271 chars)
+--------------------------------------------------------------------------------
+StackVibe has a single, focused purpose: to inspect web pages on demand to identify frontend technology stacks (frameworks, CMS, analytics, CDN infrastructure) and extract computed CSS design tokens, DOM component geometry, and AI prompts for web developers and UI/UX designers.
+
+
+--------------------------------------------------------------------------------
+2. PERMISSION JUSTIFICATION
+--------------------------------------------------------------------------------
+
+[activeTab justification] (Limit: 1,000 characters | Current: 282 chars)
+--------------------------------------------------------------------------------
+The activeTab permission is required to access the URL, title, and DOM structure of the currently focused browser tab only when the user explicitly clicks the StackVibe extension icon or opens the developer inspection console. StackVibe never accesses tabs automatically without user initiation.
+
+
+[scripting justification] (Limit: 1,000 characters | Current: 272 chars)
+--------------------------------------------------------------------------------
+The scripting permission is required to execute read-only content script inspectors (content/design_extractor.js and content/main_world_detector.js) that inspect global window variables and compute element geometry in the context of the active web page requested by the user.
+
+
+[storage justification] (Limit: 1,000 characters | Current: 213 chars)
+--------------------------------------------------------------------------------
+The storage permission is required to store user settings, scan history, saved site snapshots ("Snap Library"), and custom inspiration links locally in the user's browser using chrome.storage.local.
+
+
+[Host permission justification] (Limit: 1,000 characters | Current: 295 chars)
+--------------------------------------------------------------------------------
+Host permissions for <all_urls> are required to allow StackVibe's read-only inspection script to analyze technology signatures and computed CSS styles on web pages across any domain that the user explicitly chooses to inspect. The inspector performs no background network requests or tracking.
+
+
+--------------------------------------------------------------------------------
+3. ARE YOU USING REMOTE CODE?
+--------------------------------------------------------------------------------
+
+Select Radio Option: 
+(●) No, I am not using Remote code
+
+[Justification] (If prompt box appears | Current: 247 chars)
+--------------------------------------------------------------------------------
+All JavaScript and logic used by StackVibe are completely included and packaged inside the extension distribution package. The extension does not use eval(), unsafe-inline scripts, or load external JavaScript/Wasm files from remote servers.
+
+
+--------------------------------------------------------------------------------
+4. DATA USAGE CHECKLIST
+--------------------------------------------------------------------------------
+
+Check ONLY the following 3 data categories:
+  [X] Personally identifiable information (Optional account registration name/email)
+  [X] Authentication information (Optional account password hash for Convex cloud sync)
+  [X] Website content (Read-only computed CSS design tokens and DOM geometry)
+
+LEAVE ALL OTHER CATEGORIES UNCHECKED:
+  [ ] Health information
+  [ ] Financial and payment information
+  [ ] Personal communications
+  [ ] Location
+  [ ] Web history
+  [ ] User activity
+
+CERTIFICATIONS (Check ALL 3 required checkboxes):
+  [X] I do not sell or transfer user data to third parties, apart from the approved use cases
+  [X] I do not use or transfer user data for purposes that are unrelated to my item's single purpose
+  [X] I do not use or transfer user data to determine creditworthiness or for lending purposes
+
+
+--------------------------------------------------------------------------------
+5. PRIVACY POLICY
+--------------------------------------------------------------------------------
+
+[Privacy policy URL*]
+--------------------------------------------------------------------------------
+https://github.com/shiv2240/StackVibe/blob/main/PRIVACY_POLICY.md
