@@ -1,8 +1,13 @@
 {
   "manifest_version": 3,
   "name": "StackVibe - Tech Stack & Design Spec Extractor",
-  "version": "1.0.0",
-  "description": "Identify frontend tech stacks & extract full getdesign.md style design systems, AI prompts, Figma tokens, and code snippets.",
+  "version": "2.0.0",
+  "description": "Identify 100% accurate frontend tech stacks, WordPress plugins/themes, CMS, analytics, CDN infrastructure, and extract complete getdesign.md design systems, 6-level DOM hierarchy trees, component blueprints, AI prompts, Figma tokens, and multi-criteria inspiration lab.",
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
   "permissions": [
     "activeTab",
     "scripting",
@@ -13,6 +18,7 @@
   ],
   "action": {
     "default_popup": "popup/popup.html",
+    "default_title": "StackVibe Developer Console",
     "default_icon": {
       "16": "assets/icon16.png",
       "48": "assets/icon48.png",
