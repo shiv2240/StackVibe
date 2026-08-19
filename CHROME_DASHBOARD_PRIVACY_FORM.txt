@@ -32,9 +32,9 @@ The scripting permission is required to execute read-only content script inspect
 The storage permission is required to store user settings, scan history, saved site snapshots ("Snap Library"), and custom inspiration links locally in the user's browser using chrome.storage.local.
 
 
-[Host permission justification] (Limit: 1,000 characters | Current: 295 chars)
+[Host permission justification] (NOT NEEDED / LEAVE BLANK)
 --------------------------------------------------------------------------------
-Host permissions for <all_urls> are required to allow StackVibe's read-only inspection script to analyze technology signatures and computed CSS styles on web pages across any domain that the user explicitly chooses to inspect. The inspector performs no background network requests or tracking.
+Broad host permissions (<all_urls>) have been completely removed from manifest.json. StackVibe relies strictly on the activeTab permission to inspect pages on-demand upon user click, eliminating Chrome Web Store review delays.
 
 
 --------------------------------------------------------------------------------

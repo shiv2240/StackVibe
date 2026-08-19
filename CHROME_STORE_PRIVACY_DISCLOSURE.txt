@@ -20,8 +20,8 @@ Justification: The scripting permission is required to execute read-only content
 [storage]
 Justification: The storage permission is required to store user settings, scan history, saved site snapshots ("Snap Library"), and custom inspiration links locally in the user's browser using chrome.storage.local.
 
-[<all_urls> / Host Permissions]
-Justification: Host permissions for <all_urls> are required to allow StackVibe's read-only inspection script to analyze technology signatures and computed CSS styles on web pages across any domain that the user chooses to inspect.
+[Host Permissions]
+Justification: Broad host permissions (<all_urls>) have been removed. StackVibe relies on activeTab to inspect tabs strictly on-demand.
 
 --------------------------------------------------------------------------------
 3. DATA USE & PRIVACY CERTIFICATION
