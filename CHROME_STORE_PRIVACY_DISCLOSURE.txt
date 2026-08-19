@@ -1,0 +1,44 @@
+================================================================================
+CHROME DEVELOPER DASHBOARD — PRIVACY PRACTICES DISCLOSURE FORM
+================================================================================
+
+1. SINGLE PURPOSE STATEMENT
+--------------------------------------------------------------------------------
+[Single Purpose Description]
+StackVibe has a single purpose: to inspect web pages on demand to identify frontend technology stacks (frameworks, CMS, analytics, CDN infrastructure) and extract computed CSS design tokens, DOM component geometry, and AI prompts for web developers and UI/UX designers.
+
+--------------------------------------------------------------------------------
+2. PERMISSION JUSTIFICATIONS (Chrome Web Store Review Team Disclosures)
+--------------------------------------------------------------------------------
+
+[activeTab]
+Justification: The activeTab permission is required to access the URL, title, and DOM structure of the currently focused browser tab only when the user explicitly clicks the StackVibe extension icon or opens the inspection console.
+
+[scripting]
+Justification: The scripting permission is required to execute read-only content script inspectors (content/design_extractor.js and content/main_world_detector.js) that inspect global window variables and compute element geometry in the active web page context.
+
+[storage]
+Justification: The storage permission is required to store user settings, scan history, saved site snapshots ("Snap Library"), and custom inspiration links locally in the user's browser using chrome.storage.local.
+
+[<all_urls> / Host Permissions]
+Justification: Host permissions for <all_urls> are required to allow StackVibe's read-only inspection script to analyze technology signatures and computed CSS styles on web pages across any domain that the user chooses to inspect.
+
+--------------------------------------------------------------------------------
+3. DATA USE & PRIVACY CERTIFICATION
+--------------------------------------------------------------------------------
+
+[Personal Information Collected]
+- Authentication Information: User email/username and hashed credentials (optional, used solely for Convex cloud account synchronization).
+- Webpage Content & Technical Metadata: Scanned technology signatures, HTML element counts, computed CSS colors, typography, and DOM bounding boxes.
+
+[Data Handling Disclosures]
+- Sold Data Certification: StackVibe certifies that user data is NOT sold to third parties under any circumstances.
+- Unrelated Transfer Certification: User data is NOT transferred or used for purposes unrelated to the extension's core functionality.
+- Creditworthiness / Lending: Data is NOT used or transferred to determine creditworthiness or for lending purposes.
+
+--------------------------------------------------------------------------------
+4. MANIFEST V3 REMOTE CODE SELF-CERTIFICATION
+--------------------------------------------------------------------------------
+
+[Remote Code Certification]
+StackVibe complies strictly with Manifest V3 Content Security Policy rules (script-src 'self'). The extension does NOT execute remote code, load external JavaScript libraries at runtime, or use eval/unsafe-inline scripts in extension HTML pages.

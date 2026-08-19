@@ -1,0 +1,100 @@
+================================================================================
+CHROME WEB STORE — OFFICIAL LISTING DETAILS & STORE COPY
+================================================================================
+
+1. PRODUCT DETAILS & TEXT FIELDS
+--------------------------------------------------------------------------------
+
+[ITEM TITLE]
+StackVibe - Tech Stack & Design Spec Extractor
+
+[SHORT SUMMARY] (Max 132 characters)
+Identify frontend tech stacks & extract full getdesign.md style design systems, AI prompts, Figma tokens, and code snippets.
+
+[CATEGORY]
+Developer Tools
+
+[LANGUAGE]
+English (United States)
+
+[HOMEPAGE URL]
+https://github.com/shiv2240/StackVibe
+
+[SUPPORT URL]
+https://github.com/shiv2240/StackVibe/issues
+
+--------------------------------------------------------------------------------
+2. DETAILED DESCRIPTION (Chrome Web Store Store Page)
+--------------------------------------------------------------------------------
+
+StackVibe is the ultimate evidence-first Developer Web Intelligence Console & Design Spec Extractor. Built for frontend engineers, UI/UX designers, and AI developers, StackVibe inspects any website to instantly identify its full technology stack, extract computed CSS design tokens, compute DOM component geometry, and generate zero-hallucination AI prompts for Claude, GPT-4o, Gemini, Cursor, Lovable, and Manus.
+
+Why Install StackVibe?
+Most web detectors check a single CSS class or window object, leading to false positives on minified production sites. Design extractors often fabricate generic HEX colors (#4F46E5) and tell AI to "make a modern UI". StackVibe is different: it operates as a multi-layer evidence graph that inspects DOM Fibers, runtime globals, script bundles, stylesheets, and response headers—never guessing or inventing false fallback values.
+
+===================================
+KEY FEATURES & CAPABILITIES
+===================================
+
+1. High-Precision Tech Stack Fingerprinting:
+- Detects 30+ frameworks, libraries, CMS, and cloud tools including React, Next.js, Vue.js, Nuxt 3, Angular, Svelte/SvelteKit, Polymer, Shaka Player, Tailwind CSS, Bootstrap, Material UI, Shopify, WordPress (themes & plugins), Google Analytics/GA4, GTM, Mixpanel, Hotjar, Segment, Vercel, Cloudflare, and Netlify.
+- Dual-World Engine: Inspects true MAIN-world runtime objects (window.React, window.__NEXT_DATA__, __reactFiber$) and ISOLATED-world computed DOM styles.
+- Shows confidence scores (%) and explicit evidence lines for every technology.
+
+2. Computed Design Forensics (getdesign.md):
+- Semantic Color Frequency Mapping: Identifies canvas background, surface cards, button colors, header navbar, and heading typography colors.
+- Exact Typography Scale: Extracts computed font families, H1/H2 font sizes, font weights, and line heights.
+- Component Geometry Analysis: Computes exact bounding box dimensions (width x height), padding, border radius, and shadow elevation for headers, hero banners, buttons, cards, footers, and interactive forms.
+- Full 6-Level DOM Architecture Tree Graph with inline "Copy Tree Graph" buttons.
+
+3. Zero-Hallucination AI Prompts & Static Code Analyzer:
+- Generates RECONSTRUCTION MODE prompts for Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, Cursor, and Lovable.
+- Includes a dedicated "Frontend Technology Profiler & Static Code Analyzer" task that outputs a strict 100% accuracy JSON tech stack audit.
+
+4. Design Mixer (Inspiration Lab v2.0):
+- Combine design patterns from multiple reference sites (e.g. Hero from Stripe + Nav from Linear + Buttons from Vercel + Cards from Airbnb) into a unified prompt.
+- Custom Inspiration Links: Add custom domains/URLs with persistent local storage.
+- 6-Criteria Master Directives: Configure Target Stack, Component Scope, Visual Direction, Interactivity Level, Output Format, and Custom Constraints.
+- Built-in Pattern Rationale Dictionary & Live UI Synthesis Explanation Cards.
+
+5. Cloud Authentication & Snap Library:
+- Real-time cloud sync powered by Convex Backend (https://oceanic-dolphin-290.convex.cloud).
+- Save site snapshots and view your personal Snap Library grid rendered with actual extracted brand colors.
+
+===================================
+PRIVACY & SECURITY GUARANTEE
+===================================
+- Zero Telemetry / Tracking: StackVibe does NOT track your browsing history or transmit data to third-party analytics.
+- On-Demand Inspection: Operates locally when you open the console popup.
+- Strict MV3 Content Security Policy: Fully compliant with Manifest V3 security requirements (script-src 'self'). Zero remote or inline scripts.
+
+Install StackVibe now to inspect web tech stacks and extract production-grade design specs in one click!
+
+--------------------------------------------------------------------------------
+3. GRAPHIC ASSET REQUIREMENTS & SPECIFICATIONS
+--------------------------------------------------------------------------------
+
+[STORE ICON]
+- Size: 128 x 128 pixels
+- Format: PNG with transparency
+- Guidelines: High-resolution logo icon clear against dark and light backgrounds.
+
+[SCREENSHOTS] (Up to 5 screenshots, at least 1 required)
+- Dimensions: 1280 x 800 or 640 x 400 pixels
+- Format: 24-bit PNG or JPEG (no alpha transparency)
+- Recommended Screenshots:
+  1. Screenshot 1: Overview Console (Showing detected tech stack & confidence scores on Next.js/React site).
+  2. Screenshot 2: Design Forensics & Color Palette (Semantic color mapping, typography scale & getdesign.md generator).
+  3. Screenshot 3: Page Architecture Tree Graph (6-level DOM layout tree with Copy Tree Graph controls).
+  4. Screenshot 4: Frontend Tech Profiler Directive (JSON static code analyzer prompt output).
+  5. Screenshot 5: Design Mixer Inspiration Lab (Custom URL links & 6-criteria prompt builder).
+
+[SMALL PROMO TILE]
+- Dimensions: 440 x 280 pixels
+- Format: JPEG or 24-bit PNG (no alpha)
+- Content: StackVibe logo + tagline "Web Tech Stack & Design Spec Extractor".
+
+[MARQUEE PROMO TILE]
+- Dimensions: 1400 x 560 pixels
+- Format: JPEG or 24-bit PNG (no alpha)
+- Content: Large banner showcasing Apple-inspired glassmorphic Developer Inspection Console UI.
