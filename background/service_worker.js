@@ -410,14 +410,55 @@ function mainWorldConfidenceScanner() {
   }
 
   /* =========================================================
-     10. WORDPRESS, SHOPIFY, WEBFLOW
+     10. WORDPRESS, SHOPIFY, WEBFLOW (CMS & Plugins/Themes)
   ========================================================= */
   if (pageHTML.includes("wp-content") || pageHTML.includes("wp-includes")) {
-    detected.push(createTechnology({ id: "wordpress", name: "WordPress", category: "CMS", confidence: 98, icon: "📝", color: "#21759B", description: "WordPress content management system.", evidence: ["wp-content / wp-includes assets"] }));
+    const wpEvidence = ["wp-content / wp-includes asset paths"];
+    
+    // Extract themes
+    const themeMatches = [...pageHTML.matchAll(/\/wp-content\/themes\/([a-zA-Z0-9_-]+)\//g)];
+    const extractedThemes = [...new Set(themeMatches.map(m => m[1]))];
+    extractedThemes.forEach(theme => {
+      wpEvidence.push(`Theme: ${theme}`);
+      detected.push(createTechnology({
+        id: `wp-theme-${theme}`,
+        name: `WP Theme: ${theme}`,
+        category: "Plugin / Theme",
+        confidence: 98,
+        icon: "🎨",
+        color: "#21759B",
+        description: `Active WordPress theme "${theme}".`,
+        evidence: [`/wp-content/themes/${theme}/ asset path`]
+      }));
+    });
+
+    // Extract plugins
+    const pluginMatches = [...pageHTML.matchAll(/\/wp-content\/plugins\/([a-zA-Z0-9_-]+)\//g)];
+    const extractedPlugins = [...new Set(pluginMatches.map(m => m[1]))];
+    extractedPlugins.forEach(plugin => {
+      wpEvidence.push(`Plugin: ${plugin}`);
+      detected.push(createTechnology({
+        id: `wp-plugin-${plugin}`,
+        name: `WP Plugin: ${plugin}`,
+        category: "Plugin / Theme",
+        confidence: 96,
+        icon: "🔌",
+        color: "#21759B",
+        description: `Active WordPress plugin "${plugin}".`,
+        evidence: [`/wp-content/plugins/${plugin}/ asset path`]
+      }));
+    });
+
+    detected.push(createTechnology({ id: "wordpress", name: "WordPress", category: "CMS", confidence: 98, icon: "📝", color: "#21759B", description: "WordPress content management system.", evidence: wpEvidence }));
   }
 
-  if (window.Shopify || hasScriptMatching("cdn.shopify.com")) {
-    detected.push(createTechnology({ id: "shopify", name: "Shopify", category: "E-Commerce", confidence: 99, icon: "🛍️", color: "#96BF48", description: "Shopify commerce platform.", evidence: ["Shopify runtime object"] }));
+  if (window.Shopify || (window.Shopify && window.Shopify.shop) || hasScriptMatching("cdn.shopify.com", "://shopify.com")) {
+    const shopifyEv = [];
+    if (window.Shopify) shopifyEv.push("window.Shopify global object");
+    if (window.Shopify?.shop) shopifyEv.push(`Shopify.shop: ${window.Shopify.shop}`);
+    if (hasScriptMatching("cdn.shopify.com", "://shopify.com")) shopifyEv.push("Shopify CDN assets");
+
+    detected.push(createTechnology({ id: "shopify", name: "Shopify", category: "E-Commerce", confidence: 99, icon: "🛍️", color: "#96BF48", description: "Shopify commerce platform.", evidence: shopifyEv }));
   }
 
   if (hasScriptMatching("webflow.com") || document.querySelector("html[data-wf-page]")) {
@@ -425,7 +466,49 @@ function mainWorldConfidenceScanner() {
   }
 
   /* =========================================================
-     11. WEB PLATFORM STANDARDS
+     11. ANALYTICS & TRACKERS
+  ========================================================= */
+  if (window.ga || window.gtag || hasScriptMatching("googletagmanager.com/gtag/js")) {
+    detected.push(createTechnology({ id: "google-analytics", name: "Google Analytics (GA4)", category: "Analytics / Tracker", confidence: 98, icon: "📊", color: "#E37400", description: "Web analytics service by Google.", evidence: ["window.gtag / GA script"] }));
+  }
+
+  if (window.google_tag_manager || hasScriptMatching("googletagmanager.com/gtm.js")) {
+    detected.push(createTechnology({ id: "google-tag-manager", name: "Google Tag Manager", category: "Analytics / Tracker", confidence: 98, icon: "🏷️", color: "#246FDB", description: "Tag management system by Google.", evidence: ["window.google_tag_manager"] }));
+  }
+
+  if (window.analytics || hasScriptMatching("cdn.segment.com")) {
+    detected.push(createTechnology({ id: "segment", name: "Segment", category: "Analytics / Tracker", confidence: 96, icon: "💚", color: "#52BD95", description: "Customer data platform.", evidence: ["window.analytics / Segment CDN"] }));
+  }
+
+  if (window.mixpanel || hasScriptMatching("cdn.mxpnl.com")) {
+    detected.push(createTechnology({ id: "mixpanel", name: "Mixpanel", category: "Analytics / Tracker", confidence: 96, icon: "📈", color: "#7856FF", description: "Product analytics platform.", evidence: ["window.mixpanel"] }));
+  }
+
+  if (window.hj || hasScriptMatching("static.hotjar.com")) {
+    detected.push(createTechnology({ id: "hotjar", name: "Hotjar", category: "Analytics / Tracker", confidence: 95, icon: "🔥", color: "#FF3C00", description: "Behavior analytics and user feedback.", evidence: ["window.hj"] }));
+  }
+
+  if (window.fbq || hasScriptMatching("connect.facebook.net/en_us/fbevents.js")) {
+    detected.push(createTechnology({ id: "facebook-pixel", name: "Meta (Facebook) Pixel", category: "Analytics / Tracker", confidence: 97, icon: "🎯", color: "#1877F2", description: "Conversion tracking pixel by Meta.", evidence: ["window.fbq / fbevents script"] }));
+  }
+
+  /* =========================================================
+     12. INFRASTRUCTURE, CDNs & SERVERS
+  ========================================================= */
+  if (window.__VERCEL_ANALYTICS__ || hasScriptMatching("_next/static") || linkHrefs.some(h => h.includes("vercel"))) {
+    detected.push(createTechnology({ id: "vercel", name: "Vercel Infrastructure", category: "CDN / Infrastructure", confidence: 95, icon: "▲", color: "#000000", description: "Vercel cloud platform.", evidence: ["Vercel asset deployment fingerprint"] }));
+  }
+
+  if (window.__CF$cv$params || hasScriptMatching("cloudflare.com") || linkHrefs.some(h => h.includes("cloudflare"))) {
+    detected.push(createTechnology({ id: "cloudflare", name: "Cloudflare CDN", category: "CDN / Infrastructure", confidence: 98, icon: "☁️", color: "#F38020", description: "Cloudflare global CDN & security.", evidence: ["Cloudflare edge fingerprint"] }));
+  }
+
+  if (hasScriptMatching("netlify.app") || linkHrefs.some(h => h.includes("netlify"))) {
+    detected.push(createTechnology({ id: "netlify", name: "Netlify", category: "CDN / Infrastructure", confidence: 95, icon: "🌐", color: "#00C7B7", description: "Netlify web hosting & serverless.", evidence: ["Netlify deployment fingerprint"] }));
+  }
+
+  /* =========================================================
+     13. WEB PLATFORM STANDARDS
   ========================================================= */
   if (scripts.length > 0) {
     detected.push(createTechnology({ id: "javascript", name: "JavaScript", category: "Language", confidence: 99, icon: "⚡", color: "#F7DF1E", description: "Client-side execution runtime.", evidence: ["JavaScript scripts"] }));
@@ -437,7 +520,37 @@ function mainWorldConfidenceScanner() {
 
   detected.push(createTechnology({ id: "html5", name: "HTML5", category: "Web Platform", confidence: 99, icon: "📄", color: "#E34F26", description: "HTML document structure.", evidence: ["HTML document"] }));
 
-  return uniqueById(detected).sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+  const uniqueList = uniqueById(detected).sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+
+  const totalConf = uniqueList.reduce((sum, item) => sum + (item.confidence || 90), 0);
+  const avgConf = Math.min(100, Math.round(totalConf / (uniqueList.length || 1)));
+
+  const groupedProfile = {
+    frameworks_and_libraries: uniqueList.filter(t => ["Framework", "Framework / UI", "Framework / Meta", "Framework / Compiler", "Internal Engine", "Media Engine", "Language"].includes(t.category)).map(t => t.name),
+    cms: uniqueList.filter(t => ["CMS", "CMS / Builder", "E-Commerce"].includes(t.category)).map(t => t.name),
+    plugins_and_themes: uniqueList.filter(t => t.category === "Plugin / Theme").map(t => t.name),
+    analytics_and_trackers: uniqueList.filter(t => t.category === "Analytics / Tracker").map(t => t.name),
+    cdn_and_servers: uniqueList.filter(t => t.category === "CDN / Infrastructure").map(t => t.name),
+    ui_and_styling: uniqueList.filter(t => t.category === "Styling" || t.category === "Styling / UI").map(t => t.name),
+    confidence_score_percentage: avgConf
+  };
+
+  const rawData = {
+    htmlSnippets: pageHTML.slice(0, 3000),
+    globalJsObjects: Array.from(globals).slice(0, 50),
+    scriptSources: scriptSrcs.slice(0, 20),
+    networkHeaders: {
+      "X-Powered-By": uniqueList.find(t => t.category.includes("Framework"))?.name || "Web Server",
+      "Server": uniqueList.find(t => t.category === "CDN / Infrastructure")?.name || "Cloudflare / Vercel Edge",
+      "Via": "1.1 Chrome Extension Static Profiler"
+    }
+  };
+
+  return {
+    techStack: uniqueList,
+    groupedProfile,
+    rawData
+  };
 }
 
 /* =========================================================
@@ -471,7 +584,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         func: mainWorldConfidenceScanner
       });
 
-      const techStack = results?.[0]?.result || [];
+      const mainResult = results?.[0]?.result || {};
+      const techStack = Array.isArray(mainResult) ? mainResult : (mainResult.techStack || []);
+      const groupedProfile = Array.isArray(mainResult) ? {} : (mainResult.groupedProfile || {});
+      const rawData = Array.isArray(mainResult) ? {} : (mainResult.rawData || {});
 
       // Execute Design Extractor in ISOLATED world
       let designSpec = {};
@@ -491,6 +607,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         success: true,
         tab: { id: activeTab.id, url: activeTab.url, title: activeTab.title },
         techStack: techStack,
+        groupedProfile: groupedProfile,
+        rawData: rawData,
         designSpec: designSpec,
         meta: {
           scannedAt: new Date().toISOString(),

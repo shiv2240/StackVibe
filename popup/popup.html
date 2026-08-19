@@ -168,12 +168,15 @@
 
       <!-- 4. Page Structure Tree Panel -->
       <section id="tab-structure" class="tab-pane">
-        <div class="panel-header">
-          <h3>Page Architecture Tree</h3>
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h3>Page Architecture Tree</h3>
+            <p class="panel-desc" style="margin-top:2px;">Structural layout hierarchy extracted directly from the DOM.</p>
+          </div>
+          <button id="copyTreeBtn" class="btn-xs btn-primary">Copy Tree Graph</button>
         </div>
-        <p class="panel-desc">Structural layout hierarchy extracted directly from the DOM.</p>
 
-        <div id="structureTreeBox" class="structure-tree-card"></div>
+        <div id="structureTreeBox" class="structure-tree-card margin-top-xs"></div>
       </section>
 
       <!-- 5. Component Blueprints Panel -->
@@ -210,6 +213,7 @@
               <label for="aiTaskSelect">AI Task</label>
               <select id="aiTaskSelect" class="form-select">
                 <option value="reconstruct">Reconstruct Website (Default)</option>
+                <option value="profiler">Frontend Tech Profiler & Static Code Analyzer</option>
                 <option value="component">Recreate Selected Component</option>
                 <option value="prompt">Generate Implementation Prompt</option>
                 <option value="explain">Explain Architecture</option>
@@ -250,7 +254,17 @@
         <div class="panel-header">
           <h3>Design Mixer — Inspiration Lab</h3>
         </div>
-        <p class="panel-desc">Combine design systems from saved sites into a creative prompt.</p>
+        <p class="panel-desc">Combine design systems from saved sites or custom URLs into a creative prompt.</p>
+
+        <!-- Custom Inspiration Source Input -->
+        <div class="mix-custom-card margin-bottom-xs">
+          <label for="mixCustomUrlInput">Add Custom Inspiration Link / Domain</label>
+          <div class="mix-input-group">
+            <input type="url" id="mixCustomUrlInput" class="form-input" placeholder="e.g. framer.com, apple.com, github.com..." />
+            <button id="addCustomMixLinkBtn" class="btn-xs btn-primary">+ Add Link</button>
+          </div>
+          <div id="customMixLinksList" class="custom-links-pills margin-top-xs"></div>
+        </div>
 
         <div class="mix-controls-card">
           <div class="mix-row">
@@ -292,6 +306,74 @@
               <option value="vercel.com">vercel.com</option>
             </select>
           </div>
+        </div>
+
+        <!-- Advanced Prompt Directives Card -->
+        <div class="mix-controls-card margin-top-xs">
+          <div class="panel-sub-header">
+            <span style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Prompt Engineering Directives</span>
+          </div>
+
+          <div class="mix-row">
+            <label for="mixStackSelect">Target Stack</label>
+            <select id="mixStackSelect" class="mix-select">
+              <option value="Next.js App Router (TSX + Tailwind CSS)">Next.js App Router (TSX + Tailwind CSS)</option>
+              <option value="React Functional Components (TSX + Tailwind CSS)">React (TSX + Tailwind CSS)</option>
+              <option value="Vue 3 SFC (Composition API + Scoped CSS)">Vue 3 SFC (Composition API + Scoped CSS)</option>
+              <option value="SvelteKit + Svelte 5 (Tailwind CSS)">SvelteKit + Svelte 5</option>
+              <option value="Semantic HTML5 + Modern CSS3 + Vanilla JS">Semantic HTML5 + Modern CSS3 + JS</option>
+            </select>
+          </div>
+
+          <div class="mix-row">
+            <label for="mixComponentSelect">What Component</label>
+            <select id="mixComponentSelect" class="mix-select">
+              <option value="Landing Page Hero Section">Landing Page Hero Section</option>
+              <option value="Full SaaS Homepage">Full SaaS Homepage</option>
+              <option value="SaaS Homepage Product Feature Section">SaaS Product Feature Section</option>
+              <option value="Pricing & Plans Table">Pricing & Plans Table</option>
+              <option value="Dashboard Analytics UI">Dashboard Analytics UI</option>
+              <option value="Reusable UI Component System">Reusable UI Component System</option>
+            </select>
+          </div>
+
+          <div class="mix-row">
+            <label for="mixDirectionSelect">Visual Direction</label>
+            <select id="mixDirectionSelect" class="mix-select">
+              <option value="Harmonized Blend (Borrow principles into an original design)">Harmonized Blend (Original Design)</option>
+              <option value="High Fidelity (Faithfully mimic referenced patterns)">High Fidelity Mimic</option>
+              <option value="Dark Mode Glassmorphic & Elevated UI">Dark Glassmorphic UI</option>
+            </select>
+          </div>
+
+          <div class="mix-row">
+            <label for="mixFunctionalitySelect">Functionality</label>
+            <select id="mixFunctionalitySelect" class="mix-select">
+              <option value="Fully Interactive (Working navigation, dropdowns, forms & animations)">Fully Interactive (Working UI & State)</option>
+              <option value="Static Production UI Component">Static Production Markup & Styling</option>
+            </select>
+          </div>
+
+          <div class="mix-row">
+            <label for="mixOutputSelect">Output Format</label>
+            <select id="mixOutputSelect" class="mix-select">
+              <option value="Single Self-Contained Executable File">Single Self-Contained Executable File</option>
+              <option value="Production-Ready Modular Multi-File Components">Production-Ready Multi-File Components</option>
+            </select>
+          </div>
+
+          <div class="mix-col margin-top-xs">
+            <label for="mixConstraintsInput" style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Constraints & Directives</label>
+            <input type="text" id="mixConstraintsInput" class="form-input margin-top-xs" placeholder="e.g. Brand colors #0F172A, Inter font, WCAG AAA accessibility..." />
+          </div>
+        </div>
+
+        <!-- Inspiration Pattern Breakdown Card -->
+        <div id="mixPatternExplanationCard" class="mix-custom-card margin-top-xs" style="background:var(--bg-card); border-left:3px solid var(--primary);">
+          <div style="font-size:10px; font-weight:700; color:var(--primary); text-transform:uppercase; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
+            💡 Inspiration Pattern Synthesis Rationale
+          </div>
+          <div id="mixPatternExplanationText" style="font-size:10px; line-height:1.45; color:var(--text-main);"></div>
         </div>
 
         <button id="copyMixPromptBtn" class="btn-primary btn-full margin-top">

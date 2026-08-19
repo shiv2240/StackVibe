@@ -1,0 +1,20 @@
+STACKVIBE CHROME EXTENSION — PRIVACY & SECURITY POLICY
+======================================================
+Last Updated: August 19, 2026
+Version: 2.0.0
+
+1. OVERVIEW & DATA MINIMIZATION
+StackVibe is a developer tool designed to inspect frontend technology stacks, computed CSS design tokens, and DOM page architecture.
+- No Unauthorized Telemetry: StackVibe does NOT track browsing history, keylog input fields, or send analytics data.
+- Local Processing: Technology stack fingerprinting occurs locally in your browser.
+- Zero Data Selling: We never sell, rent, or trade any user information.
+
+2. PERMISSIONS & DATA USAGE
+- activeTab: Used exclusively to inspect the currently focused tab when requested by the user.
+- scripting: Required to run the read-only DOM inspector script on the inspected page.
+- storage: Stores saved site snapshots, custom inspiration links, and user preferences in chrome.storage.local.
+
+3. CONTENT SECURITY POLICY (CSP)
+StackVibe strictly complies with Chrome Extension Manifest V3 Content Security Policy (script-src 'self'). Zero remote or inline scripts are executed.
+
+For complete documentation, refer to PRIVACY_POLICY.md.

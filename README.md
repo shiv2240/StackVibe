@@ -1,6 +1,6 @@
-# StackVibe — Web Technology Fingerprinting & UI Reconstruction Console
+# StackVibe — Web Technology Fingerprinting & UI Reconstruction Console v2.0
 
-StackVibe is an evidence-first Chrome Extension (Manifest V3) and Web Intelligence Console that inspects any website to instantly identify its full frontend technology graph (React, Next.js, Vue, SvelteKit, Angular, Nuxt, Tailwind CSS, Polymer, Shaka Player, etc.), extract computed design forensics (getdesign.md), and generate zero-hallucination AI Reconstruction Directives for Claude, GPT-4o, Gemini, Cursor, Lovable, and Manus.
+StackVibe is an evidence-first Chrome Extension (Manifest V3) and Web Intelligence Console that inspects any website to instantly identify its full frontend technology graph (React, Next.js, Vue, SvelteKit, Angular, Nuxt, Tailwind CSS, WordPress plugins/themes, Shopify, Analytics trackers, CDN infrastructure), extract computed design forensics (`getdesign.md`), and generate zero-hallucination AI Reconstruction Directives for Claude, GPT-4o, Gemini, Cursor, Lovable, and Manus.
 
 Powered by a Convex Cloud Backend for user authentication and real-time cloud scan synchronization.
 
@@ -14,33 +14,35 @@ Powered by a Convex Cloud Backend for user authentication and real-time cloud sc
 3. **Missing Component Geometry**: Extracting text colors is useless without knowing header heights, CTA button geometry, hero section column structures, and card surface elevation shadows.
 
 ### How StackVibe Solves This
-- **Universal Evidence Engine**: Multi-layer scanner inspecting 500 DOM elements, `<script>` bundles, `<link>` stylesheets, meta tags, and `window` globals with direct evidence lines (`Direct` vs `Inferred`).
+- **Universal Evidence Engine**: Multi-layer scanner inspecting 500 DOM elements, `<script>` bundles, `<link>` stylesheets, meta tags, response headers, and `window` globals with direct evidence lines (`Direct` vs `Inferred`).
 - **Zero-Hallucination Policy**: If a property is not detected on the target site, StackVibe outputs `Not detected / Browser default`. It never fabricates fallback colors or fonts.
 - **Strict RECONSTRUCTION MODE Prompts**: Directs AI agents to reconstruct the target website faithfully without unsolicited redesigns.
-- **Component Geometry Forensics**: Computes actual layout bounds for headers, hero sections, action buttons, card surfaces, and DOM architecture trees.
+- **Component Geometry Forensics**: Computes actual layout bounds for headers, hero sections, action buttons, card surfaces, all 15+ document layout sections, and 6-level DOM architecture trees.
 
 ---
 
 ## Key Features & Architecture
 
 ### 1. High-Precision Universal Tech Stack Fingerprinting
-- **20+ Frameworks & Libraries**: React, Next.js, Vue.js, Nuxt 3, Angular, Svelte/SvelteKit, Polymer, Google Wiz, Shaka Player, Tailwind CSS, Bootstrap, Material UI, Chakra UI, Webflow, Shopify, WordPress, Vite, Webpack.
+- **30+ Frameworks, CMS & Infrastructure**: React, Next.js, Vue.js, Nuxt 3, Angular, Svelte/SvelteKit, Polymer, Google Wiz, Shaka Player, Tailwind CSS, Bootstrap, Material UI, Chakra UI, Webflow, Shopify, WordPress (themes & plugins), Google Analytics/GA4, GTM, Mixpanel, Hotjar, Segment, Vercel, Cloudflare, Netlify.
 - **Dual-World Execution Engine**: Uses Chrome's `MAIN` world context to inspect real runtime objects (`window.React`, `window.__NEXT_DATA__`, `window.Vue`, `window.webpackChunk`) combined with an `ISOLATED` world computed style extractor.
 - **Evidence-Tagged Output**: Every signature records explicit evidence lines (`__NEXT_DATA__`, `/_next/static/`, `__reactFiber$`) and calculates confidence percentages.
 
 ### 2. Computed Design Forensics & Geometry (getdesign.md)
 - **Semantic Color & Frequency Mapping**: Counts element color frequency and tags semantic usage roles (`canvas-bg`, `surface-bg`, `button-bg`, `header-bg`, `heading-text`).
 - **Typography Scale**: Actual computed font families, H1/H2 font sizes & weights, body typography rules, and line heights.
-- **Component Geometry & Blueprints**: Inspected heights, background colors, text colors, padding, corner radii, and box shadows for headers, hero sections, buttons, and surface cards.
-- **Page Architecture Tree**: DOM layout hierarchy tree (`DOCUMENT` -> `HEADER` -> `HERO` -> `COMPONENTS` -> `FOOTER`).
+- **Full Sectional Geometry Extractor**: Inspected heights, background colors, text colors, padding, corner radii, and box shadows for headers, hero sections, buttons, card surfaces, footer, forms, and all major layout sections.
+- **Page Architecture Tree Graph**: 6-level DOM layout hierarchy tree with pixel bounds and inline **Copy Tree Graph** buttons.
 
-### 3. Evidence-First AI Reconstruction Engine
+### 3. Evidence-First AI Reconstruction & Profiling Engine
 - **Target AI Routing**: Tailored output for Claude, GPT-4o, Gemini, Cursor, Lovable, and Manus.
-- **AI Task Selector**: `Reconstruct Website` (Default), `Recreate Selected Component`, `Generate Implementation Prompt`, `Explain Architecture`, `Generate Design Tokens`.
-- **Dynamic Stack Resolver**: Automatically selects implementation targets (e.g. Next.js App Router + TypeScript, Nuxt 3 + Vue, SvelteKit + Svelte, or Semantic HTML5 + CSS3).
+- **AI Task Selector**: `Reconstruct Website` (Default), `Frontend Tech Profiler & Static Code Analyzer`, `Recreate Selected Component`, `Generate Implementation Prompt`, `Explain Architecture`, `Generate Design Tokens`.
+- **Frontend Tech Profiler Directive**: Produces a strict 100% accuracy JSON static code analyzer prompt grouping `frameworks_and_libraries`, `cms`, `plugins_and_themes`, `analytics_and_trackers`, `cdn_and_servers`, `ui_and_styling`, and `confidence_score_percentage`.
 
-### 4. Design Mixer (Inspiration Lab)
-- Allows developers to blend design elements from saved sites (e.g. Hero from Stripe + Navigation from Linear + Buttons from Vercel + Cards from Airbnb) into a unified prompt.
+### 4. Design Mixer (Inspiration Lab v2.0)
+- **Custom Inspiration Links**: Input any domain/URL to add custom design inspiration sources with persistent local storage.
+- **6-Criteria Master Directives**: Tailors prompt engineering across `Target Stack`, `Component Scope`, `Visual Direction`, `Interactivity`, `Output Delivery Structure`, and `Custom Constraints`.
+- **Live Pattern Synthesis Rationale**: Displays real-time UI explanation cards detailing the architectural rationale behind selected inspiration sources (Stripe, Linear, Vercel, Airbnb, Apple, Framer, etc.).
 
 ### 5. Convex Cloud Backend & Snap Library
 - Real-time cloud authentication & scan history saving via Convex (`https://oceanic-dolphin-290.convex.cloud`).
@@ -52,10 +54,14 @@ Powered by a Convex Cloud Backend for user authentication and real-time cloud sc
 
 ```
 .
-├── manifest.json                 # Chrome Extension Manifest V3 Config
+├── manifest.json                 # Chrome Extension Manifest V3 Config (v2.0.0)
 ├── package.json                  # NPM dependencies (convex)
 ├── convex.json                   # Convex cloud project configuration
-├── StackVibe_Chrome_Extension.zip# Re-compiled Extension distribution package
+├── PRIVACY_POLICY.md             # Chrome Web Store Privacy & Security Policy
+├── PRIVACY_POLICY.txt            # Plain text Privacy Summary
+├── CHANGELOG.txt                 # Detailed Version 2.0 Release Notes
+├── LICENSE.txt                   # ISC License
+├── StackVibe_Chrome_Extension.zip# Distribution ZIP Package
 ├── convex/                       # Convex Cloud Backend
 │   ├── schema.ts                 # Database schema (users, scans)
 │   ├── users.ts                  # Auth & user mutations/queries
@@ -98,5 +104,5 @@ npx convex dev
 
 ---
 
-## License
-ISC License. Built for frontend engineers, UI/UX designers, and AI developers.
+## License & Privacy Policy
+ISC License. Refer to `PRIVACY_POLICY.md` for Chrome Web Store privacy compliance details. Built for frontend engineers, UI/UX designers, and AI developers.

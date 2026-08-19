@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tokensBox = document.getElementById("tokensBox");
 
   const structureTreeBox = document.getElementById("structureTreeBox");
+  const copyTreeBtn = document.getElementById("copyTreeBtn");
   const componentsGrid = document.getElementById("componentsGrid");
 
   const aiTargetCardsSm = document.querySelectorAll(".ai-target-card-sm");
@@ -74,6 +75,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const mixNavSelect = document.getElementById("mixNavSelect");
   const mixButtonSelect = document.getElementById("mixButtonSelect");
   const mixCardSelect = document.getElementById("mixCardSelect");
+  const mixStackSelect = document.getElementById("mixStackSelect");
+  const mixComponentSelect = document.getElementById("mixComponentSelect");
+  const mixDirectionSelect = document.getElementById("mixDirectionSelect");
+  const mixFunctionalitySelect = document.getElementById("mixFunctionalitySelect");
+  const mixOutputSelect = document.getElementById("mixOutputSelect");
+  const mixConstraintsInput = document.getElementById("mixConstraintsInput");
+  const mixCustomUrlInput = document.getElementById("mixCustomUrlInput");
+  const addCustomMixLinkBtn = document.getElementById("addCustomMixLinkBtn");
+  const customMixLinksList = document.getElementById("customMixLinksList");
   const copyMixPromptBtn = document.getElementById("copyMixPromptBtn");
   const mixPromptPreview = document.getElementById("mixPromptPreview");
 
@@ -231,6 +241,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           if (res && res.success) {
             scanState.techStack = res.techStack || [];
+            scanState.groupedProfile = res.groupedProfile || {};
+            scanState.rawData = res.rawData || {};
             scanState.designSpec = res.designSpec || {};
             updateScanStatus("success", `Complete · ${scanState.scan.durationMs}ms`);
             renderAllPanels();
@@ -269,6 +281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderPageStructureTree();
     renderComponentBlueprints();
     renderAIReconstructionPanel();
+    populateMixSelects();
     renderDesignMixer();
 
     await auth.saveScan({
@@ -395,48 +408,74 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tree = scanState.designSpec?.structureTree;
     const comps = scanState.designSpec?.components || {};
 
-    function renderNode(node) {
+    function renderNode(node, isRoot = false) {
       if (!node) return '';
       const tagStr = `&lt;${escapeHtml(node.tag)}${escapeHtml(node.id || '')}${escapeHtml(node.class || '')}&gt;`;
       const headingStr = node.heading ? ` • <span style="color:var(--text-main);font-weight:600;">${escapeHtml(node.heading)}</span>` : '';
-      const statsStr = node.stats ? ` • <span style="color:var(--text-muted);">${escapeHtml(node.stats)}</span>` : '';
+      const statsStr = node.stats ? ` • <span style="color:var(--text-muted);font-size:10px;">${escapeHtml(node.stats)}</span>` : '';
 
       const childrenHtml = (node.children || []).length > 0
-        ? (node.children || []).map(child => renderNode(child)).join('')
+        ? (node.children || []).map(child => renderNode(child, false)).join('')
         : '';
 
+      const indentStyle = isRoot ? '' : 'margin-left: 10px; border-left: 1px dashed var(--border-color); padding-left: 8px; margin-top: 4px;';
+
       return `
-        <div class="tree-node">
-          <span class="tree-tag">${tagStr}</span>${headingStr}${statsStr}
+        <div class="tree-node" style="${indentStyle}">
+          <span class="tree-tag" style="font-weight:700; color:var(--primary);">${tagStr}</span>${headingStr}${statsStr}
           ${childrenHtml}
         </div>
       `;
     }
 
     if (tree && tree.children && tree.children.length > 0) {
-      structureTreeBox.innerHTML = renderNode(tree);
-    } else {
       structureTreeBox.innerHTML = `
+        <div style="font-size:11px; font-weight:700; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--border-color); color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+          <span>🌐 DOM LAYOUT ARCHITECTURE GRAPH</span>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span class="pill-tag" style="font-size:9px; background:rgba(79,70,229,0.15); color:var(--primary);">${escapeHtml(tree.stats || 'Complete DOM Data')}</span>
+            <button id="inlineCopyTreeBtn" class="btn-xs" style="padding:2px 8px; font-size:10px;">Copy Tree</button>
+          </div>
+        </div>
+        ${renderNode(tree, true)}
+      `;
+
+      const inlineCopy = document.getElementById("inlineCopyTreeBtn");
+      if (inlineCopy) {
+        inlineCopy.addEventListener("click", () => {
+          const treeText = getTreeAsFormattedText(tree);
+          copyToClipboard(treeText, "Page Architecture Tree copied!");
+        });
+      }
+    } else {
+      const headerStr = comps.header ? `&lt;HEADER&gt; • Height ${comps.header.height || 'auto'} • ${comps.header.navItemsCount || 0} Links` : '&lt;HEADER&gt; • Navigation Bar';
+      const heroStr = comps.hero ? `&lt;HERO&gt; • ${comps.hero.hasTwoColumns ? 'Two-Column Split' : 'Single Column'} • Heading: "${escapeHtml(comps.hero.headingText || 'Hero Banner')}"` : '&lt;HERO&gt; • Hero Banner Section';
+      const compStr = `&lt;SECTION.COMPONENTS&gt; • ${comps.buttons ? comps.buttons.length : 0} Inspected Action Buttons • ${comps.cards ? comps.cards.length : 0} Inspected Card Surfaces`;
+
+      structureTreeBox.innerHTML = `
+        <div style="font-size:11px; font-weight:700; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--border-color); color:var(--text-muted);">
+          🌐 DOM LAYOUT ARCHITECTURE GRAPH
+        </div>
         <div class="tree-node">
           <span class="tree-tag">&lt;DOCUMENT&gt;</span>
-          <div class="tree-node">
-            <span class="tree-tag">&lt;HEADER&gt;</span> <span class="tree-info">${comps.header ? `Height ${comps.header.height || 'auto'} • ${comps.header.navItemsCount || 0} Navigation Links` : 'Header Navigation Bar'}</span>
+          <div class="tree-node" style="margin-left:10px; border-left:1px dashed var(--border-color); padding-left:8px; margin-top:4px;">
+            <span class="tree-tag">${headerStr}</span>
           </div>
-          <div class="tree-node">
-            <span class="tree-tag">&lt;HERO&gt;</span> <span class="tree-info">${comps.hero ? `${comps.hero.hasTwoColumns ? 'Two-Column Split' : 'Single Column'} • ${comps.hero.headingText ? `Heading: "${escapeHtml(comps.hero.headingText)}"` : 'Hero Banner'}` : 'Hero Banner Section'}</span>
+          <div class="tree-node" style="margin-left:10px; border-left:1px dashed var(--border-color); padding-left:8px; margin-top:4px;">
+            <span class="tree-tag">${heroStr}</span>
           </div>
-          <div class="tree-node">
-            <span class="tree-tag">&lt;SECTION.COMPONENTS&gt;</span> <span class="tree-info">${comps.buttons ? comps.buttons.length : 0} Inspected Buttons • ${comps.cards ? comps.cards.length : 0} Inspected Card Surfaces</span>
+          <div class="tree-node" style="margin-left:10px; border-left:1px dashed var(--border-color); padding-left:8px; margin-top:4px;">
+            <span class="tree-tag">${compStr}</span>
           </div>
-          <div class="tree-node">
-            <span class="tree-tag">&lt;FOOTER&gt;</span> <span class="tree-info">Footer Navigation & Copyright</span>
+          <div class="tree-node" style="margin-left:10px; border-left:1px dashed var(--border-color); padding-left:8px; margin-top:4px;">
+            <span class="tree-tag">&lt;FOOTER&gt; • Footer Navigation & Copyright</span>
           </div>
         </div>
       `;
     }
   }
 
-  // --- 5. Component Blueprints ---
+  // --- 5. Component & Sectional Blueprints ---
   function renderComponentBlueprints() {
     const spec = scanState.designSpec || {};
     const comps = spec.components || {};
@@ -444,46 +483,90 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const blueprints = [];
 
+    // 1. Navigation Header
     if (comps.header) {
       const h = comps.header;
       blueprints.push({
+        type: "Header",
         title: "Navigation Header",
-        previewHtml: `<div style="width:100%;height:34px;background:${h.backgroundColor || 'var(--bg-main)'};display:flex;align-items:center;justify-content:space-between;padding:0 8px;border-bottom:${h.borderBottom || '1px solid var(--border-color)'};border-radius:6px;font-size:10px;"><span>Logo</span><span style="color:var(--text-muted);">${h.navItemsCount || 0} Links</span></div>`,
-        prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Navigation Header inspired by ${siteTitleText}.\n- Height: ${h.height || 'auto'}\n- Position: ${h.position || 'relative'}\n- Background: ${h.backgroundColor || 'Extracted'}\n- Navigation Items Count: ${h.navItemsCount || 0}`
+        previewHtml: `<div style="width:100%;height:34px;background:${h.backgroundColor || 'var(--bg-main)'};display:flex;align-items:center;justify-content:space-between;padding:0 8px;border-bottom:${h.borderBottom || '1px solid var(--border-color)'};border-radius:6px;font-size:10px;"><span style="font-weight:700;">Header Nav</span><span style="color:var(--text-muted);font-size:9px;">${h.navItemsCount || 0} Links</span></div>`,
+        prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Navigation Header for ${siteTitleText}.\n- Height: ${h.height || 'auto'}\n- Position: ${h.position || 'relative'}\n- Background: ${h.backgroundColor || 'Extracted'}\n- Navigation Items Count: ${h.navItemsCount || 0}`
       });
     }
 
+    // 2. Hero Banner
     if (comps.hero) {
       const hero = comps.hero;
       blueprints.push({
-        title: "Hero Banner",
-        previewHtml: `<div style="width:100%;padding:8px;background:var(--bg-main);border:1px solid var(--border-color);border-radius:6px;font-size:10px;"><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(hero.headingText || 'Hero Banner')}</strong><span style="font-size:8px;color:var(--text-muted);">${hero.hasTwoColumns ? 'Two-Column Split' : 'Single Column'}</span></div>`,
-        prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Hero Section inspired by ${siteTitleText}.\n- Layout: ${hero.hasTwoColumns ? 'Two-Column Split' : 'Single Column'}\n- Heading: "${hero.headingText || 'N/A'}"\n- Primary CTA: "${hero.ctaText || 'N/A'}"`
+        type: "Hero",
+        title: "Hero Banner Section",
+        previewHtml: `<div style="width:100%;padding:8px;background:${hero.backgroundColor || 'var(--bg-main)'};border:1px solid var(--border-color);border-radius:6px;font-size:10px;"><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-main);">${escapeHtml(hero.headingText || 'Hero Banner')}</strong><span style="font-size:8px;color:var(--text-muted);">${hero.hasTwoColumns ? 'Two-Column Split' : 'Single Column'} • CTA: ${escapeHtml(hero.ctaText || 'N/A')}</span></div>`,
+        prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Hero Section for ${siteTitleText}.\n- Layout: ${hero.hasTwoColumns ? 'Two-Column Split' : 'Single Column'}\n- Heading: "${hero.headingText || 'N/A'}"\n- Subheading: "${hero.subheadingText || 'N/A'}"\n- Primary CTA: "${hero.ctaText || 'N/A'}"`
       });
     }
 
-    if (comps.buttons && comps.buttons.length > 0) {
-      comps.buttons.slice(0, 2).forEach((btn, idx) => {
+    // 3. ALL Extracted Page Layout Sections
+    if (comps.sections && comps.sections.length > 0) {
+      comps.sections.forEach((sec, idx) => {
         blueprints.push({
-          title: `Action Button ${idx + 1}`,
-          previewHtml: `<button style="background:${btn.backgroundColor || 'var(--primary)'};color:${btn.color || '#FFF'};border-radius:${btn.borderRadius || '6px'};padding:6px 12px;border:none;font-size:10px;font-weight:${btn.fontWeight || '700'};">Button ${idx + 1}</button>`,
-          prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Action Button inspired by ${siteTitleText}.\n- Height: ${btn.height || 'auto'}\n- Background: ${btn.backgroundColor || 'Extracted'}\n- Text Color: ${btn.color || 'Extracted'}\n- Border Radius: ${btn.borderRadius || '0'}`
+          type: "Section",
+          title: sec.role ? `${sec.role}` : `Section ${idx + 1}: ${sec.title}`,
+          previewHtml: `<div style="width:100%;padding:8px;background:${sec.backgroundColor || 'var(--bg-main)'};border:1px solid var(--border-color);border-radius:6px;font-size:10px;"><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-main);">${escapeHtml(sec.title || `Section ${idx + 1}`)}</strong><span style="font-size:8px;color:var(--text-muted);">${escapeHtml(sec.layout)} • ${sec.itemsCount || 0} Items</span></div>`,
+          prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct ${sec.role} (${sec.title}) for ${siteTitleText}.\n- Section ID: ${sec.id}\n- Layout Architecture: ${sec.layout}\n- Subtitle: "${sec.description || 'N/A'}"\n- Content Items Count: ${sec.itemsCount}\n- Action Buttons: ${sec.buttonsCount}\n- Background Color: ${sec.backgroundColor || 'Extracted'}\n- Padding: ${sec.padding}`
         });
       });
     }
 
-    if (comps.cards && comps.cards.length > 0) {
-      comps.cards.slice(0, 2).forEach((card, idx) => {
+    // 4. Footer Section
+    if (comps.footer) {
+      const f = comps.footer;
+      blueprints.push({
+        type: "Footer",
+        title: "Footer Navigation Section",
+        previewHtml: `<div style="width:100%;padding:8px;background:${f.backgroundColor || 'var(--bg-main)'};border-top:1px solid var(--border-color);border-radius:6px;font-size:10px;display:flex;justify-content:space-between;align-items:center;"><span>Footer Nav</span><span style="color:var(--text-muted);font-size:8px;">${f.linksCount || 0} Links • ${f.columnsCount || 1} Cols</span></div>`,
+        prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Footer Section for ${siteTitleText}.\n- Background: ${f.backgroundColor || 'Extracted'}\n- Columns: ${f.columnsCount}\n- Total Links: ${f.linksCount}\n- Copyright Notice: "${f.copyrightText || 'N/A'}"`
+      });
+    }
+
+    // 5. Action Buttons
+    if (comps.buttons && comps.buttons.length > 0) {
+      comps.buttons.forEach((btn, idx) => {
         blueprints.push({
-          title: `Surface Card ${idx + 1}`,
-          previewHtml: `<div style="width:100%;padding:10px;background:${card.backgroundColor || 'var(--bg-main)'};border-radius:${card.borderRadius || '6px'};border:${card.border || '1px solid var(--border-color)'};font-size:10px;">Surface Card ${idx + 1}</div>`,
-          prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Surface Card inspired by ${siteTitleText}.\n- Background: ${card.backgroundColor || 'Extracted'}\n- Border Radius: ${card.borderRadius || '0'}\n- Border: ${card.border || 'none'}`
+          type: "Button",
+          title: `Action Button: ${btn.label.slice(0, 25)}`,
+          previewHtml: `<div style="width:100%;display:flex;align-items:center;justify-content:center;"><button style="background:${btn.backgroundColor || 'var(--primary)'};color:${btn.color || '#FFF'};border-radius:${btn.borderRadius || '6px'};padding:5px 10px;border:${btn.border || 'none'};font-size:10px;font-weight:${btn.fontWeight || '700'};max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(btn.label.slice(0, 20))}</button></div>`,
+          prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Action Button inspired by ${siteTitleText}.\n- Label: "${btn.label}"\n- Height: ${btn.height || 'auto'}\n- Background: ${btn.backgroundColor || 'Extracted'}\n- Text Color: ${btn.color || 'Extracted'}\n- Border Radius: ${btn.borderRadius || '0'}\n- Font Weight: ${btn.fontWeight || '700'}`
+        });
+      });
+    }
+
+    // 6. Surface Cards
+    if (comps.cards && comps.cards.length > 0) {
+      comps.cards.forEach((card, idx) => {
+        blueprints.push({
+          type: "Card",
+          title: `Surface Card: ${card.label.slice(0, 25)}`,
+          previewHtml: `<div style="width:100%;padding:8px;background:${card.backgroundColor || 'var(--bg-main)'};border-radius:${card.borderRadius || '6px'};border:${card.border || '1px solid var(--border-color)'};font-size:10px;color:${card.color || 'var(--text-main)'};"><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(card.label)}</strong></div>`,
+          prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Surface Card inspired by ${siteTitleText}.\n- Label: "${card.label}"\n- Background: ${card.backgroundColor || 'Extracted'}\n- Text Color: ${card.color || 'Extracted'}\n- Border Radius: ${card.borderRadius || '0'}\n- Border: ${card.border || 'none'}\n- Shadow: ${card.shadow || 'none'}`
+        });
+      });
+    }
+
+    // 7. Form Containers
+    if (comps.forms && comps.forms.length > 0) {
+      comps.forms.forEach((form, idx) => {
+        blueprints.push({
+          type: "Form",
+          title: `Form Container: ${form.label.slice(0, 25)}`,
+          previewHtml: `<div style="width:100%;padding:8px;background:var(--bg-main);border-radius:6px;border:1px solid var(--border-color);font-size:10px;display:flex;justify-content:space-between;align-items:center;"><span>${escapeHtml(form.label.slice(0, 20))}</span><span style="font-size:8px;color:var(--text-muted);">${form.inputsCount} Inputs</span></div>`,
+          prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Form Container inspired by ${siteTitleText}.\n- Label: "${form.label}"\n- Input Fields Count: ${form.inputsCount}\n- Submit Button Text: "${form.submitText || 'Submit'}"`
         });
       });
     }
 
     if (blueprints.length === 0) {
       blueprints.push({
+        type: "Canvas",
         title: "Extracted Page Canvas",
         previewHtml: `<div style="width:100%;padding:10px;background:var(--bg-main);border-radius:6px;border:1px solid var(--border-color);font-size:10px;">Page Canvas Component</div>`,
         prompt: `RECONSTRUCTION DIRECTIVE: Reconstruct Page Canvas for ${siteTitleText}.`
@@ -493,7 +576,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     componentsGrid.innerHTML = blueprints.map(c => `
       <div class="comp-card">
         <div class="comp-preview">${c.previewHtml}</div>
-        <span class="comp-title">${escapeHtml(c.title)}</span>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="comp-title" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px;">${escapeHtml(c.title)}</span>
+          <span class="pill-tag" style="font-size:8px; padding:1px 5px; background:rgba(79,70,229,0.1); color:var(--primary);">${escapeHtml(c.type || 'Section')}</span>
+        </div>
         <div class="comp-actions">
           <button class="btn-xs copy-comp-btn" data-prompt="${encodeURIComponent(c.prompt)}">Copy Blueprint</button>
         </div>
@@ -520,7 +606,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       selectedAiTarget,
       scanState.tab,
       scanState.techStack,
-      scanState.designSpec
+      scanState.designSpec,
+      selectedAiTask,
+      selectedAiFidelity,
+      scanState.rawData || {}
     );
 
     aiPromptPreview.textContent = promptText;
@@ -546,25 +635,183 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // --- 7. Design Mixer (Inspiration Lab) ---
-  function renderDesignMixer() {
-    const config = {
-      hero: mixHeroSelect.value,
-      nav: mixNavSelect.value,
-      button: mixButtonSelect.value,
-      card: mixCardSelect.value
-    };
+  let customMixLinks = [];
 
-    mixPromptPreview.textContent = ExportEngine.toDesignMixPrompt(config);
+  async function initCustomMixLinks() {
+    const saved = await StorageUtil.get("stackvibe_custom_mix_links");
+    if (Array.isArray(saved)) {
+      customMixLinks = saved;
+    }
+    populateMixSelects();
   }
 
-  mixHeroSelect.addEventListener("change", renderDesignMixer);
-  mixNavSelect.addEventListener("change", renderDesignMixer);
-  mixButtonSelect.addEventListener("change", renderDesignMixer);
-  mixCardSelect.addEventListener("change", renderDesignMixer);
+  function populateMixSelects() {
+    let activeHostname = "";
+    try {
+      if (scanState.tab.url && scanState.tab.url.startsWith("http")) {
+        activeHostname = new URL(scanState.tab.url).hostname.replace(/^www\./, "");
+      }
+    } catch (_) {}
+
+    const savedSnapHostnames = (auth.savedScans || []).map(s => {
+      try {
+        if (s.url && s.url.startsWith("http")) return new URL(s.url).hostname.replace(/^www\./, "");
+        return s.url;
+      } catch (_) { return s.url; }
+    }).filter(Boolean);
+
+    const presetSources = ["stripe.com", "linear.app", "vercel.com", "airbnb.com", "notion.so", "spotify.com", "apple.com", "framer.com"];
+
+    const allSources = [...new Set([
+      ...(activeHostname ? [activeHostname] : []),
+      ...customMixLinks,
+      ...savedSnapHostnames,
+      ...presetSources
+    ])];
+
+    const selects = [mixHeroSelect, mixNavSelect, mixButtonSelect, mixCardSelect];
+    selects.forEach(select => {
+      if (!select) return;
+      const currentVal = select.value;
+      select.innerHTML = allSources.map(src => `<option value="${escapeHtml(src)}">${escapeHtml(src)}</option>`).join('');
+      if (currentVal && allSources.includes(currentVal)) {
+        select.value = currentVal;
+      }
+    });
+
+    renderCustomMixLinksPills();
+  }
+
+  function renderCustomMixLinksPills() {
+    if (!customMixLinksList) return;
+
+    if (customMixLinks.length === 0) {
+      customMixLinksList.innerHTML = `<span style="font-size:9px; color:var(--text-muted);">No custom links added yet. Enter any domain above to mix inspiration.</span>`;
+      return;
+    }
+
+    customMixLinksList.innerHTML = customMixLinks.map(link => `
+      <span class="custom-link-pill">
+        🌐 ${escapeHtml(link)}
+        <span class="remove-link-btn" data-link="${escapeHtml(link)}">×</span>
+      </span>
+    `).join('');
+
+    customMixLinksList.querySelectorAll(".remove-link-btn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const linkToRemove = e.target.dataset.link;
+        customMixLinks = customMixLinks.filter(l => l !== linkToRemove);
+        await StorageUtil.set("stackvibe_custom_mix_links", customMixLinks);
+        populateMixSelects();
+        renderDesignMixer();
+        showToast("Inspiration link removed");
+      });
+    });
+  }
+
+  function addCustomMixLink(rawUrl) {
+    if (!rawUrl || !rawUrl.trim()) {
+      showToast("Please enter a valid link or domain.");
+      return;
+    }
+    let domain = rawUrl.trim();
+    try {
+      if (domain.startsWith("http://") || domain.startsWith("https://")) {
+        domain = new URL(domain).hostname;
+      }
+      domain = domain.replace(/^www\./, "");
+    } catch (_) {}
+
+    if (!domain) return;
+
+    if (!customMixLinks.includes(domain)) {
+      customMixLinks.unshift(domain);
+      StorageUtil.set("stackvibe_custom_mix_links", customMixLinks);
+      populateMixSelects();
+      mixHeroSelect.value = domain;
+      renderDesignMixer();
+      if (mixCustomUrlInput) mixCustomUrlInput.value = "";
+      showToast(`Added inspiration link: ${domain}`);
+    } else {
+      showToast(`Link "${domain}" is already in your inspiration sources.`);
+    }
+  }
+
+  const mixPatternExplanationText = document.getElementById("mixPatternExplanationText");
+
+  const patternKnowledgeDict = {
+    "stripe.com": "Multi-layered radiant mesh background gradients & typography-driven hero hierarchy.",
+    "linear.app": "Ultra-sleek dark mode aesthetic, razor-thin subtle borders (1px solid rgba(255,255,255,0.08)) & ⌘K keybindings.",
+    "vercel.com": "High-contrast monochrome palette, tactile geometric buttons & instant state micro-interactions.",
+    "airbnb.com": "Soft elevated surface cards with soft drop shadows (0 6px 20px rgba(0,0,0,0.06)) & rounded corners.",
+    "notion.so": "Minimalist document canvas, borderless content blocks & clean monochromatic typography.",
+    "spotify.com": "Bold vibrant duotone accents, deep dark backdrop (#121212) & pill-shaped action buttons.",
+    "apple.com": "Frosted glassmorphic blur (backdrop-filter: blur(20px)) & spring physics micro-interactions.",
+    "framer.com": "Interactive 3D hover tilt effects, background grid patterns & floating pill navigation bars."
+  };
+
+  function getShortRationale(site, category) {
+    const clean = (site || "").toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "");
+    if (patternKnowledgeDict[clean]) return patternKnowledgeDict[clean];
+    return `Custom pattern principles from ${site} for ${category}.`;
+  }
+
+  function renderDesignMixer() {
+    const config = {
+      hero: mixHeroSelect ? mixHeroSelect.value : "stripe.com",
+      nav: mixNavSelect ? mixNavSelect.value : "linear.app",
+      button: mixButtonSelect ? mixButtonSelect.value : "vercel.com",
+      card: mixCardSelect ? mixCardSelect.value : "airbnb.com",
+      stack: mixStackSelect ? mixStackSelect.value : "Next.js App Router (TSX + Tailwind CSS)",
+      componentType: mixComponentSelect ? mixComponentSelect.value : "Landing Page Hero Section",
+      direction: mixDirectionSelect ? mixDirectionSelect.value : "Harmonized Blend (Borrow principles into an original design)",
+      functionality: mixFunctionalitySelect ? mixFunctionalitySelect.value : "Fully Interactive (Working navigation, dropdowns, forms & animations)",
+      outputFormat: mixOutputSelect ? mixOutputSelect.value : "Single Self-Contained Executable File",
+      constraints: mixConstraintsInput ? mixConstraintsInput.value : ""
+    };
+
+    if (mixPatternExplanationText) {
+      mixPatternExplanationText.innerHTML = `
+        <div style="margin-bottom:3px;"><strong>Hero Pattern (${escapeHtml(config.hero)}):</strong> <em>${escapeHtml(getShortRationale(config.hero, 'Hero'))}</em></div>
+        <div style="margin-bottom:3px;"><strong>Nav Architecture (${escapeHtml(config.nav)}):</strong> <em>${escapeHtml(getShortRationale(config.nav, 'Nav'))}</em></div>
+        <div style="margin-bottom:3px;"><strong>Action Buttons (${escapeHtml(config.button)}):</strong> <em>${escapeHtml(getShortRationale(config.button, 'Buttons'))}</em></div>
+        <div><strong>Card Surfaces (${escapeHtml(config.card)}):</strong> <em>${escapeHtml(getShortRationale(config.card, 'Cards'))}</em></div>
+      `;
+    }
+
+    if (mixPromptPreview) {
+      mixPromptPreview.textContent = ExportEngine.toDesignMixPrompt(config);
+    }
+  }
+
+  if (addCustomMixLinkBtn) {
+    addCustomMixLinkBtn.addEventListener("click", () => {
+      if (mixCustomUrlInput) addCustomMixLink(mixCustomUrlInput.value);
+    });
+  }
+
+  if (mixCustomUrlInput) {
+    mixCustomUrlInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addCustomMixLink(mixCustomUrlInput.value);
+      }
+    });
+  }
+
+  [mixHeroSelect, mixNavSelect, mixButtonSelect, mixCardSelect, mixStackSelect, mixComponentSelect, mixDirectionSelect, mixFunctionalitySelect, mixOutputSelect].forEach(sel => {
+    if (sel) sel.addEventListener("change", renderDesignMixer);
+  });
+
+  if (mixConstraintsInput) {
+    mixConstraintsInput.addEventListener("input", renderDesignMixer);
+  }
 
   copyMixPromptBtn.addEventListener("click", () => {
     copyToClipboard(mixPromptPreview.textContent, "Combined inspiration prompt copied!");
   });
+
+  await initCustomMixLinks();
 
   // --- 8. Snap Library (Real Extracted Colors) ---
   function renderSnapLibrary(query = "") {
@@ -667,6 +914,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     const md = ExportEngine.toGetDesignMarkdown(scanState.tab, scanState.techStack, scanState.designSpec);
     copyToClipboard(md, "Markdown design spec copied!");
   });
+
+  function getTreeAsFormattedText(tree) {
+    if (!tree) return "No DOM Page Architecture Tree detected.";
+    function formatNode(node, indent = 0) {
+      if (!node) return "";
+      const prefix = "  ".repeat(indent);
+      const tag = `<${node.tag}${node.id || ''}${node.class || ''}>`;
+      const details = [node.heading, node.stats].filter(Boolean).join(" • ");
+      const line = `${prefix}- ${tag}${details ? ` — ${details}` : ''}`;
+      const childrenLines = (node.children || []).map(c => formatNode(c, indent + 1)).filter(Boolean).join("\n");
+      return childrenLines ? `${line}\n${childrenLines}` : line;
+    }
+    return formatNode(tree);
+  }
+
+  if (copyTreeBtn) {
+    copyTreeBtn.addEventListener("click", () => {
+      const treeText = getTreeAsFormattedText(scanState.designSpec?.structureTree);
+      copyToClipboard(treeText, "Page Architecture Tree copied!");
+    });
+  }
 
   copyAiPromptBtn.addEventListener("click", () => {
     copyToClipboard(aiPromptPreview.textContent, "AI Reconstruction Directive copied!");

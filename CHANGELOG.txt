@@ -1,0 +1,35 @@
+STACKVIBE CHROME EXTENSION — CHANGELOG & RELEASE NOTES
+======================================================
+
+VERSION 2.0.0 (2026-08-19)
+------------------------------------------------------
+[New Features]
+1. Frontend Technology Profiler & Static Code Analyzer Directive:
+   - Added 100% accuracy system prompt and 4-step detection methodology (Global JS objects, HTML/CSS patterns, Script URL signatures, Response headers).
+   - Generates structured JSON output covering frameworks, libraries, CMS, plugins & themes, analytics trackers, CDN infrastructure, and confidence score percentages.
+
+2. Page Architecture Tree Complete Extractor & Copy Graph Controls:
+   - Upgraded DOM hierarchy traversal to an unconstrained 6-level layout tree extractor.
+   - Added header "Copy Tree Graph" and inline "Copy Tree" buttons to format the complete tree graph for clipboard copy.
+
+3. All-Section & Component Geometry Extractor:
+   - Expanded component geometry analysis from 3-4 items to scan up to 15+ document layout sections.
+   - Added semantic role detection (Hero Banner, Feature Showcase Grid, Pricing Table, Testimonials, FAQ Accordion, CTA Banner, Footer Navigation, Form Containers).
+   - Computes grid column reflow, item counts, button counts, and computed geometry bounds.
+
+4. Design Mixer — Inspiration Lab Enhancements:
+   - Added Custom Inspiration Link / Domain input bar with persistent storage (chrome.storage.local).
+   - Added interactive link pills with removal controls.
+   - Integrated 6-criteria Prompt Engineering Directives: Target Stack, Component Scope, Visual Direction, Functionality, Output Delivery Structure, and Custom Constraints.
+   - Added built-in Pattern Rationale Knowledge Dictionary and live Inspiration Synthesis Rationale UI card.
+
+5. Security & Manifest V3 CSP Compliance:
+   - Fixed Manifest V3 Content Security Policy inline script warnings.
+   - Fully compliant with Chrome Extension MV3 security standards (script-src 'self').
+
+------------------------------------------------------
+VERSION 1.0.0 (2026-08-15)
+------------------------------------------------------
+- Initial release of StackVibe Tech Stack & Design Spec Extractor.
+- Dual-world execution engine (MAIN & ISOLATED world contexts).
+- Convex Cloud authentication and real-time Snap Library synchronization.

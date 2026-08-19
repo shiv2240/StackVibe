@@ -789,7 +789,74 @@ body {
   font-weight: 600;
 }
 
-/* Mix Controls */
+/* Mix Custom Inspiration Card */
+.mix-custom-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mix-custom-card label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.mix-input-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.mix-input-group input {
+  flex: 1;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  outline: none;
+}
+
+.mix-input-group input:focus {
+  border-color: var(--primary);
+}
+
+.custom-links-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.custom-link-pill {
+  font-size: 9px;
+  background: rgba(79, 70, 229, 0.12);
+  color: var(--primary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.custom-link-pill .remove-link-btn {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 10px;
+}
+
+.custom-link-pill .remove-link-btn:hover {
+  color: var(--danger);
+}
+
 .mix-controls-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
