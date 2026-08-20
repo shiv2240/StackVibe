@@ -27,18 +27,18 @@ https://github.com/shiv2240/StackVibe/issues
 2. DETAILED DESCRIPTION (Chrome Web Store Store Page)
 --------------------------------------------------------------------------------
 
-StackVibe is the ultimate evidence-first Developer Web Intelligence Console & Design Spec Extractor. Built for frontend engineers, UI/UX designers, and AI developers, StackVibe inspects any website to instantly identify its full technology stack, extract computed CSS design tokens, compute DOM component geometry, and generate zero-hallucination AI prompts for Claude, GPT-4o, Gemini, Cursor, Lovable, and Manus.
+StackVibe is the ultimate evidence-first Developer Web Intelligence Console & Design Spec Extractor. Built for frontend engineers, UI/UX designers, and AI developers, StackVibe inspects any website to instantly identify its full technology stack, extract computed CSS design tokens, compute DOM component geometry, and generate zero-hallucination AI prompts for major AI code assistants and LLMs.
 
 Why Install StackVibe?
-Most web detectors check a single CSS class or window object, leading to false positives on minified production sites. Design extractors often fabricate generic HEX colors (#4F46E5) and tell AI to "make a modern UI". StackVibe is different: it operates as a multi-layer evidence graph that inspects DOM Fibers, runtime globals, script bundles, stylesheets, and response headers—never guessing or inventing false fallback values.
+Most web detectors check a single CSS class or window object, leading to false positives on minified production sites. Design extractors often fabricate generic HEX colors and tell AI to "make a modern UI". StackVibe is different: it operates as a multi-layer evidence graph that inspects DOM Fibers, runtime globals, script bundles, stylesheets, and response headers—never guessing or inventing false fallback values.
 
 ===================================
 KEY FEATURES & CAPABILITIES
 ===================================
 
 1. High-Precision Tech Stack Fingerprinting:
-- Detects 30+ frameworks, libraries, CMS, and cloud tools including React, Next.js, Vue.js, Nuxt 3, Angular, Svelte/SvelteKit, Polymer, Shaka Player, Tailwind CSS, Bootstrap, Material UI, Shopify, WordPress (themes & plugins), Google Analytics/GA4, GTM, Mixpanel, Hotjar, Segment, Vercel, Cloudflare, and Netlify.
-- Dual-World Engine: Inspects true MAIN-world runtime objects (window.React, window.__NEXT_DATA__, __reactFiber$) and ISOLATED-world computed DOM styles.
+- Detects 30+ frameworks, UI libraries, CMS platforms, analytics tools, and cloud infrastructure using runtime object inspection and network asset signatures.
+- Dual-World Engine: Inspects true MAIN-world runtime objects and ISOLATED-world computed DOM styles.
 - Shows confidence scores (%) and explicit evidence lines for every technology.
 
 2. Computed Design Forensics (getdesign.md):
@@ -48,11 +48,11 @@ KEY FEATURES & CAPABILITIES
 - Full 6-Level DOM Architecture Tree Graph with inline "Copy Tree Graph" buttons.
 
 3. Zero-Hallucination AI Prompts & Static Code Analyzer:
-- Generates RECONSTRUCTION MODE prompts for Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, Cursor, and Lovable.
+- Generates RECONSTRUCTION MODE prompts optimized for major AI coding tools and LLMs.
 - Includes a dedicated "Frontend Technology Profiler & Static Code Analyzer" task that outputs a strict 100% accuracy JSON tech stack audit.
 
 4. Design Mixer (Inspiration Lab v2.0):
-- Combine design patterns from multiple reference sites (e.g. Hero from Stripe + Nav from Linear + Buttons from Vercel + Cards from Airbnb) into a unified prompt.
+- Combine design patterns from multiple reference sites into a unified prompt.
 - Custom Inspiration Links: Add custom domains/URLs with persistent local storage.
 - 6-Criteria Master Directives: Configure Target Stack, Component Scope, Visual Direction, Interactivity Level, Output Format, and Custom Constraints.
 - Built-in Pattern Rationale Dictionary & Live UI Synthesis Explanation Cards.
